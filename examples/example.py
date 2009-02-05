@@ -4,7 +4,6 @@ import os
 from sys import argv, exit
 from time import sleep
 from pprint import pprint
-from datetime import datetime
 
 NBULKS = 1
 JOB_CHUNK = 3
