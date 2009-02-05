@@ -17,9 +17,6 @@
 #  
 #  Author: Enrico Sirola <enrico.sirola@statpro.com> 
 
-"""This is drmaa.py, implementing the DRMAA Python language binding
-Visit www.drmaa.org for details"""
-
 import const as _c
 from const import JobState, JobControlAction, JobSubmissionState
 import wrappers as _w
