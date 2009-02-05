@@ -29,8 +29,8 @@ setup(
     description="a python DRMAA library",
     license="BSD",
     keywords="python grid hpc drmaa",
-    url="http://code.google.com/p/drmaa-python",
-    download_url="http://drmaa-python.googlecode.com/downloads/list",
+    url="http://drmaa-python.googlecode.com",
+    download_url="http://code.google.com/p/drmaa-python/downloads/list",
     tests_require='nose',
     test_suite='nose.collector',
     classifiers="""\
