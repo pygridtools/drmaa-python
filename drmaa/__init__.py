@@ -17,16 +17,43 @@
 #  
 #  Author: Enrico Sirola <enrico.sirola@statpro.com> 
 
-import const as _c
-from const import JobState, JobControlAction, JobSubmissionState
-import wrappers as _w
 import ctypes as _ct
-import helpers as _h
 
 try:
     import namedtuple as _nt
 except ImportError: # pre 2.6 behaviour
     import nt as _nt
+
+import drmaa.const as _c
+from drmaa.const import JobState, JobControlAction, JobSubmissionState
+import drmaa.wrappers as _w
+import drmaa.helpers as _h
+from drmaa.errors import (AlreadyActiveSessionException,
+                          AuthorizationException,
+                          ConflictingAttributeValuesException,
+                          DefaultContactStringException,
+                          DeniedByDrmException,
+                          DrmCommunicationException,
+                          DrmsExitException,
+                          DrmsInitException,
+                          ExitTimeoutException,
+                          HoldInconsistentStateException,
+                          IllegalStateException,
+                          InternalException,
+                          InvalidAttributeFormatException,
+                          InvalidContactStringException,
+                          InvalidJobException,
+                          InvalidJobTemplateException,
+                          NoActiveSessionException,
+                          NoDefaultContactStringSelectedException,
+                          ReleaseInconsistentStateException,
+                          ResumeInconsistentStateException,
+                          SuspendInconsistentStateException,
+                          TryLaterException,
+                          UnsupportedAttributeException,
+                          InvalidArgumentException,
+                          InvalidAttributeValueException,
+                          OutOfMemoryException,)
 
 Version = _h.Version
 JobInfo = _nt.namedtuple("JobInfo", 

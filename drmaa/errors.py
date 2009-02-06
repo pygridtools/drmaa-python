@@ -21,6 +21,9 @@
 
 """drmaa errors"""
 
+from ctypes import create_string_buffer
+from drmaa.const import ERROR_STRING_BUFFER
+
 class AlreadyActiveSessionException(Exception):
     pass
 class AuthorizationException(Exception):
@@ -74,8 +77,6 @@ class InvalidAttributeValueException(AttributeError):
 class OutOfMemoryException(MemoryError):
     pass
 
-from const import ERROR_STRING_BUFFER
-from ctypes import create_string_buffer
 error_buffer = create_string_buffer(ERROR_STRING_BUFFER)
 
 def error_check(code):

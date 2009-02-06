@@ -21,10 +21,10 @@
 
 """internal helpers"""
 
-from wrappers import *
-from errors import error_buffer
-import const 
 import ctypes as _ct
+from drmaa.wrappers import *
+from drmaa.errors import error_buffer
+import drmaa.const as const
 
 try:
     import namedtuple as _nt

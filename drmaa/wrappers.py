@@ -18,13 +18,12 @@
 # -----------------------------------------------------------
 #  
 #  Author: Enrico Sirola <enrico.sirola@statpro.com> 
-#  $Id$ 
 
 """DRMAA C library function wrappers"""
 
 from ctypes import * 
 from ctypes.util import find_library
-from errors import error_check, error_buffer
+from drmaa.errors import error_check, error_buffer
 
 libpath = find_library('drmaa')
 

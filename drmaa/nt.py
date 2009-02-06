@@ -1,21 +1,3 @@
-# -----------------------------------------------------------
-#  Copyright (C) 2009 StatPro Italia s.r.l. 
-#                                                            
-#  StatPro Italia                                            
-#  Via G. B. Vico 4                                          
-#  I-20123 Milano                                            
-#  ITALY                                                     
-#                                                            
-#  phone: +39 02 96875 1                                     
-#  fax:   +39 02 96875 605                                   
-#                                                            
-#  email: info@riskmap.net                                   
-#                                                            
-#  This program is distributed in the hope that it will be   
-#  useful, but WITHOUT ANY WARRANTY; without even the        
-#  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR   
-#  PURPOSE. See the license for more details.                
-# -----------------------------------------------------------
 
 """named tuple implementation"""
 
