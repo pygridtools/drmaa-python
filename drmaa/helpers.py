@@ -32,7 +32,7 @@ except ImportError: # pre 2.6 behaviour
     import nt as _nt
 
 class BoolConverter(object):
-
+    """Helper class to convert to/from bool attributes."""
     @staticmethod
     def to_drmaa(value):
         if value: return 'y'
@@ -55,9 +55,14 @@ class SessionStringAttribute(object):
 
 Version = _nt.namedtuple("Version", "major minor")
 Version.__str__ = lambda x: "%s.%s" % (x.major, x.minor)
+#Version.__doc__ = """\
+#An object representing the DRMAA version.
+#
+#major and minor attributes are int. For DRMAA 1.0, major == 1 and minor == 0.
+#"""
 
 class SessionVersionAttribute(object):
-
+    """A Version attribute."""
     def __get__(self, *args):
         major = _ct.c_uint(10)
         minor = _ct.c_uint(10)
@@ -65,8 +70,18 @@ class SessionVersionAttribute(object):
         return Version(major.value, minor.value)
 
 class Attribute(object):
-
+    """A DRMAA attribute, to managed with scalar C DRMAA attribute management functions."""
     def __init__(self, name, type_converter=None):
+        """\
+Attribute constructor.
+
+:Parameters:
+ `name` : string
+   name of the attribute to be managed, as seen by the underlying C DRMAA
+ `type_converter`
+   a converter to translate attribute values to/from the underlying
+   implementation. See BoolConverter for an example.
+"""
         self.name = name
         self.converter = type_converter
     def __set__(self, instance, value):
@@ -85,7 +100,10 @@ class Attribute(object):
             return attr_buffer.value
 
 class VectorAttribute(object):
+    """\
+A DRMAA attribute representing a list. 
 
+To be managed with vector C DRMAA attribute management functions."""
     def __init__(self, name):
         self.name = name
     def __set__(self, instance, value):
@@ -95,7 +113,10 @@ class VectorAttribute(object):
                 instance, self.name))
 
 class DictAttribute(object):
+    """\
+A DRMAA attribute representing a python dict.
 
+To be managed with vector C DRMAA attribute management functions."""
     def __init__(self, name):
         self.name = name
     def __set__(self, instance, value):
@@ -162,6 +183,7 @@ def run_bulk_job(jt, start, end, incr=1):
         drmaa_release_job_ids(jids.contents)
 
 def c(f, *args):
+    """An helper function wrapping calls to the C DRMAA functions with error managing code."""
     return f(*(list(args) + [error_buffer, sizeof(error_buffer)]))
 
 def string_vector(v):
