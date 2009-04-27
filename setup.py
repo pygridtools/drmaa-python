@@ -19,11 +19,14 @@
 
 from setuptools import setup, find_packages
 
+packages = find_packages()
+package_data = dict([ (x, ['test/*.py']) for x in packages])
+
 setup(
     name="drmaa",
     version="0.4a2",
-    packages=find_packages(),
-    package_data={'': ['*.txt', '*.rst']},
+    packages=packages,
+    package_data=package_data,
     author="Enrico Sirola",
     author_email="enrico.sirola@gmail.com",
     description="a python DRMAA library",
