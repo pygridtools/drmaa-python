@@ -1,23 +1,23 @@
 # -----------------------------------------------------------
-#  Copyright (C) 2009 StatPro Italia s.r.l. 
-#                                                            
-#  StatPro Italia                                            
-#  Via G. B. Vico 4                                          
-#  I-20123 Milano                                            
-#  ITALY                                                     
-#                                                            
-#  phone: +39 02 96875 1                                     
-#  fax:   +39 02 96875 605                                   
-#                                                            
-#  email: info@riskmap.net                                   
-#                                                            
-#  This program is distributed in the hope that it will be   
-#  useful, but WITHOUT ANY WARRANTY; without even the        
-#  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR   
-#  PURPOSE. See the license for more details.                
+#  Copyright (C) 2009 StatPro Italia s.r.l.
+#
+#  StatPro Italia
+#  Via G. B. Vico 4
+#  I-20123 Milano
+#  ITALY
+#
+#  phone: +39 02 96875 1
+#  fax:   +39 02 96875 605
+#
+#  email: info@riskmap.net
+#
+#  This program is distributed in the hope that it will be
+#  useful, but WITHOUT ANY WARRANTY; without even the
+#  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+#  PURPOSE. See the license for more details.
 # -----------------------------------------------------------
-#  
-#  Author: Enrico Sirola <enrico.sirola@statpro.com> 
+#
+#  Author: Enrico Sirola <enrico.sirola@statpro.com>
 
 """internal helpers"""
 
@@ -184,7 +184,7 @@ def run_bulk_job(jt, start, end, incr=1):
 
 def c(f, *args):
     """An helper function wrapping calls to the C DRMAA functions with error managing code."""
-    return f(*(list(args) + [error_buffer, sizeof(error_buffer)]))
+    return f(*(args + (error_buffer, sizeof(error_buffer))))
 
 def string_vector(v):
     vlen = len(v)

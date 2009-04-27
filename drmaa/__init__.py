@@ -1,21 +1,21 @@
 # -----------------------------------------------------------
-#  Copyright (C) 2008 StatPro Italia s.r.l. 
-#                                                            
-#  StatPro Italia                                            
-#  Via G. B. Vico 4                                          
-#  I-20123 Milano                                            
-#  ITALY                                                     
-#                                                            
-#  phone: +39 02 96875 1                                     
-#  fax:   +39 02 96875 605                                   
-#                                                            
-#  This program is distributed in the hope that it will be   
-#  useful, but WITHOUT ANY WARRANTY; without even the        
-#  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR   
-#  PURPOSE. See the license for more details.                
+#  Copyright (C) 2008 StatPro Italia s.r.l.
+#
+#  StatPro Italia
+#  Via G. B. Vico 4
+#  I-20123 Milano
+#  ITALY
+#
+#  phone: +39 02 96875 1
+#  fax:   +39 02 96875 605
+#
+#  This program is distributed in the hope that it will be
+#  useful, but WITHOUT ANY WARRANTY; without even the
+#  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+#  PURPOSE. See the license for more details.
 # -----------------------------------------------------------
-#  
-#  Author: Enrico Sirola <enrico.sirola@statpro.com> 
+#
+#  Author: Enrico Sirola <enrico.sirola@statpro.com>
 
 """\
 A python package for DRM job submission and control.
@@ -66,11 +66,11 @@ from drmaa.errors import (AlreadyActiveSessionException,
                           OutOfMemoryException,)
 
 Version = _h.Version
-JobInfo = _nt.namedtuple("JobInfo", 
-                         """jobId hasExited hasSignal terminatedSignal 
+JobInfo = _nt.namedtuple("JobInfo",
+                         """jobId hasExited hasSignal terminatedSignal
                             hasCoreDump wasAborted resourceUsage""")
-# FileTransferMode = _nt.namedtuple("FileTransferMode", 
-#                                   """transferInputStream transferOutputStream 
+# FileTransferMode = _nt.namedtuple("FileTransferMode",
+#                                   """transferInputStream transferOutputStream
 #                                      transferErrorStream""")
 
 class JobTemplate(object):
@@ -82,12 +82,12 @@ class JobTemplate(object):
     """Working directory placeholder."""
     PARAMETRIC_INDEX = '$drmaa_incr_ph$'
     """Parametric index (for job arrays / bulk jobs) placeholder."""
-    
+
     @property
     def attributeNames(self):
         """\
-The list of supported DRMAA scalar attribute names. 
-        
+The list of supported DRMAA scalar attribute names.
+
 This is apparently useless now, and should probably substituted by the
 list of attribute names of the JobTemplate instances.
 """
@@ -107,7 +107,7 @@ list of attribute names of the JobTemplate instances.
 A (DRM-dependant) opaque string to be passed to the DRM representing
 other directives.
 """
-    blockEmail              = _h.Attribute(_c.BLOCK_EMAIL, 
+    blockEmail              = _h.Attribute(_c.BLOCK_EMAIL,
                                            type_converter=_h.BoolConverter)
     """False id this job should send an email, True otherwise."""
     startTime               = _h.Attribute(_c.START_TIME           )
@@ -120,10 +120,10 @@ other directives.
     """The path to a file representing job's stdout."""
     errorPath               = _h.Attribute(_c.ERROR_PATH           )
     """The path to a file representing job's stderr."""
-    joinFiles               = _h.Attribute(_c.JOIN_FILES, 
+    joinFiles               = _h.Attribute(_c.JOIN_FILES,
                                            type_converter=_h.BoolConverter)
     """True if stdin and stdout should be merged, False otherwise."""
-    # the following is available on ge6.2 only if enabled via cluster 
+    # the following is available on ge6.2 only if enabled via cluster
     # configuration
     transferFiles           = _h.Attribute(_c.TRANSFER_FILES       )
     """\
@@ -135,7 +135,7 @@ This option might require specific DRM configuration (it does on SGE).
     # it will raise if you try to access these attrs
     deadlineTime            = _h.Attribute(_c.DEADLINE_TIME        )
     """The job deadline time, a partial timestamp string."""
-    # these will also probably need specific converters 
+    # these will also probably need specific converters
     # (should receive float values)
     hardWallclockTimeLimit  = _h.Attribute(_c.WCT_HLIMIT           )
     """\
@@ -252,7 +252,7 @@ DRMAA library. For DRMAA 1.0, major is 1 and minor is 0.
     @staticmethod
     def initialize(contactString=None):
         """\
-Used to initialize a DRMAA session for use. 
+Used to initialize a DRMAA session for use.
 
 :Parameters:
   contactString : string or None
@@ -275,7 +275,7 @@ SessionAlreadyActiveException.
     @staticmethod
     def exit():
         """\
-Used to disengage from DRM.  
+Used to disengage from DRM.
 
 This routine ends the current DRMAA session but doesn't affect any
 jobs (e.g., queued and running jobs remain queued and
@@ -289,7 +289,7 @@ NoActiveSessionException.
     @staticmethod
     def createJobTemplate():
         """\
-Allocates a new job template. 
+Allocates a new job template.
 
 The job template is used to set the environment for jobs to be
 submitted. Once the job template has been created, it should also be
@@ -302,7 +302,7 @@ so may result in a memory leak.
     @staticmethod
     def deleteJobTemplate(jobTemplate):
         """\
-Deallocate a job template. 
+Deallocate a job template.
 
 :Parameters:
   jobTemplate : JobTemplate
@@ -316,7 +316,7 @@ This routine has no effect on running jobs.
     @staticmethod
     def runJob(jobTemplate):
         """\
-Submit a job with attributes defined in the job template. 
+Submit a job with attributes defined in the job template.
 
 :Parameters:
   jobTemplate : JobTemplate
@@ -333,14 +333,14 @@ from the underlying DRM system.
     @staticmethod
     def runBulkJobs(jobTemplate, beginIndex, endIndex, step):
         """\
-Submit a set of parametric jobs, each with attributes defined in the job template. 
+Submit a set of parametric jobs, each with attributes defined in the job template.
 
 :Parameters:
   jobTemplate : JobTemplate
     the template representng jobs to be run
   beginIndex : int
     index of the first job
-  endIndex : int 
+  endIndex : int
     index of the last job
   step : int
     the step between job ids
@@ -367,11 +367,16 @@ Used to hold, release, suspend, resume, or kill the job identified by jobId.
     action and their meanings are
   operation : string
     possible values are:
-    - `JobControlAction.SUSPEND`: stop the job
-    - `JobControlAction.RESUME`: (re)start the job
-    - `JobControlAction.HOLD`: put the job on-hold
-    - `JobControlAction.RELEASE`: release the hold on the job
-    - `JobControlAction.TERMINATE`: kill the job
+        `JobControlAction.SUSPEND`
+          stop the job
+        `JobControlAction.RESUME`
+          (re)start the job
+        `JobControlAction.HOLD`
+          put the job on-hold
+        `JobControlAction.RELEASE`
+          release the hold on the job
+        `JobControlAction.TERMINATE`
+          kill the job
 
 To avoid thread races in multithreaded applications, the DRMAA
 implementation user should explicitly synchronize this call with
@@ -385,21 +390,22 @@ used to control jobs submitted external to the DRMAA session, such as
 jobs submitted by other DRMAA session in other DRMAA implementations
 or jobs submitted via native utilities.
 """
-        _w.drmaa_control(jobName, _c.string_to_control_action(operation))
+        print 'calling control', jobId
+        _h.c(_w.drmaa_control, jobId, _c.string_to_control_action(operation))
 
     # takes string list, num value and boolean, no return value
     @staticmethod
     def synchronize(jobIds, timeout=-1, dispose=False):
         """\
-Waits until all jobs specified by jobList have finished execution. 
+Waits until all jobs specified by jobList have finished execution.
 
 :Parameters:
   jobIds
     If jobIds contains `Session.JOB_IDS_SESSION_ALL`, then this
     method waits for all jobs submitted during this DRMAA session up to
-    the moment synchronize() is called 
+    the moment synchronize() is called
   timeout : int
-    maximum time (in seconds) to be waited for the completion of a job. 
+    maximum time (in seconds) to be waited for the completion of a job.
 
     The value `Session.TIMEOUT_WAIT_FOREVER` may be specified to wait
     indefinitely for a result. The value `Session.TIMEOUT_NO_WAIT` may
@@ -435,19 +441,20 @@ call in order to be sure of how much time has passed.
 Wait for a job with jobId to finish execution or fail. 
 
 :Parameters:
-  - `jobId` : str
+  `jobId` : str
     The job id to wait completion for.
 
     If the special string, `Session.JOB_IDS_SESSION_ANY`, is provided as the
     jobId, this routine will wait for any job from the session
-  - `timeout` : float
+  `timeout` : float
     The timeout value is used to specify the desired behavior when a
-    result is not immediately available. The value,
-    `Session.TIMEOUT_WAIT_FOREVER`, may be specified to wait indefinitely for a
-    result. The value, `Session.TIMEOUT_NO_WAIT`, may be specified to return
-    immediately if no result is available. Alternatively, a number of
-    seconds may be specified to indicate how long to wait for a result
-    to become available
+    result is not immediately available. 
+
+    The value `Session.TIMEOUT_WAIT_FOREVER` may be specified to wait
+    indefinitely for a result. The value `Session.TIMEOUT_NO_WAIT` may
+    be specified to return immediately if no result is
+    available. Alternatively, a number of seconds may be specified to
+    indicate how long to wait for a result to become available
 
 This routine is modeled on the wait3 POSIX routine. If the call exits
 before timeout, either the job has been waited on successfully or
