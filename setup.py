@@ -21,7 +21,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="drmaa",
-    version="0.4a1",
+    version="0.4a2",
     packages=find_packages(),
     package_data={'': ['*.txt', '*.rst']},
     author="Enrico Sirola",
