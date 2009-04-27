@@ -390,7 +390,6 @@ used to control jobs submitted external to the DRMAA session, such as
 jobs submitted by other DRMAA session in other DRMAA implementations
 or jobs submitted via native utilities.
 """
-        print 'calling control', jobId
         _h.c(_w.drmaa_control, jobId, _c.string_to_control_action(operation))
 
     # takes string list, num value and boolean, no return value
