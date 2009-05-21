@@ -26,6 +26,8 @@ from drmaa.wrappers import *
 from drmaa.errors import error_buffer
 import drmaa.const as const
 
+_BUFLEN=const.ATTR_BUFFER
+
 try:
     import namedtuple as _nt
 except ImportError: # pre 2.6 behaviour
@@ -49,7 +51,7 @@ class SessionStringAttribute(object):
     def __init__(self, drmaa_function):
         self._f = drmaa_function
     def __get__(self, *args):
-        buf = _ct.create_string_buffer(1024)
+        buf = _ct.create_string_buffer(_BUFLEN)
         c(self._f, buf, _ct.sizeof(buf))
         return buf.value
 
@@ -123,8 +125,9 @@ To be managed with vector C DRMAA attribute management functions."""
         v = [ "%s=%s" % (k, v) for (k, v) in value.iteritems() ]
         c(drmaa_set_vector_attribute, instance, self.name, string_vector(v))
     def __get__(self, instance, _):
-        return dict([ i.split('=') for i in list(vector_attribute_iterator(
-                        instance, self.name)) ])
+        x = [ i.split('=', 1) for i in list(vector_attribute_iterator(
+                    instance, self.name)) ]
+        return dict(x)
 
 
 def attributes_iterator(attributes):
@@ -152,9 +155,9 @@ def vector_attribute_iterator(jt, attr_name):
 def attribute_names_iterator():
     attrn_p = pointer(POINTER(drmaa_attr_names_t)())
     c(drmaa_get_attribute_names, attrn_p)
-    try: 
-        name = create_string_buffer(128)
-        while drmaa_get_next_attr_name(attrn_p.contents, name, 128)\
+    try:
+        name = create_string_buffer(_BUFLEN)
+        while drmaa_get_next_attr_name(attrn_p.contents, name, _BUFLEN)\
                 != const.NO_MORE_ELEMENTS:
             yield name.value
     finally:
@@ -164,8 +167,8 @@ def vector_attribute_names_iterator():
     attrn_p = pointer(POINTER(drmaa_attr_names_t)())
     c(drmaa_get_vector_attribute_names, attrn_p)
     try:
-        name = create_string_buffer(128)
-        while drmaa_get_next_attr_name(attrn_p.contents, name, 128)\
+        name = create_string_buffer(_BUFLEN)
+        while drmaa_get_next_attr_name(attrn_p.contents, name, _BUFLEN)\
                 != const.NO_MORE_ELEMENTS:
             yield name.value
     finally:
@@ -175,8 +178,8 @@ def run_bulk_job(jt, start, end, incr=1):
     jids = pointer(POINTER(drmaa_job_ids_t)())
     try:
         c(drmaa_run_bulk_jobs, jids, jt, start, end, incr)
-        jid = create_string_buffer(128)
-        while drmaa_get_next_job_id(jids.contents, jid, 128)\
+        jid = create_string_buffer(_BUFLEN)
+        while drmaa_get_next_job_id(jids.contents, jid, _BUFLEN)\
                 != const.NO_MORE_ELEMENTS:
             yield jid.value
     finally:

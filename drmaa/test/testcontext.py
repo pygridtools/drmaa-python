@@ -2,6 +2,7 @@ from __future__ import with_statement
 from drmaa import *
 
 def test_with_session():
+    """'with' statement works with Session"""
     with Session() as s:
         print s.version
         print s.contact
@@ -9,6 +10,7 @@ def test_with_session():
         print s.drmaaImplementation
 
 def test_with_jt():
+    """'with' statement works with JobTemplate"""
     s = Session()
     with s.createJobTemplate() as jt:
         jt.remoteCommand = 'sleep'

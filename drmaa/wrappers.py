@@ -1,44 +1,39 @@
 # -----------------------------------------------------------
-#  Copyright (C) 2009 StatPro Italia s.r.l. 
-#                                                            
-#  StatPro Italia                                            
-#  Via G. B. Vico 4                                          
-#  I-20123 Milano                                            
-#  ITALY                                                     
-#                                                            
-#  phone: +39 02 96875 1                                     
-#  fax:   +39 02 96875 605                                   
-#                                                            
-#  email: info@riskmap.net                                   
-#                                                            
-#  This program is distributed in the hope that it will be   
-#  useful, but WITHOUT ANY WARRANTY; without even the        
-#  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR   
-#  PURPOSE. See the license for more details.                
+#  Copyright (C) 2009 StatPro Italia s.r.l.
+#
+#  StatPro Italia
+#  Via G. B. Vico 4
+#  I-20123 Milano
+#  ITALY
+#
+#  phone: +39 02 96875 1
+#  fax:   +39 02 96875 605
+#
+#  email: info@riskmap.net
+#
+#  This program is distributed in the hope that it will be
+#  useful, but WITHOUT ANY WARRANTY; without even the
+#  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+#  PURPOSE. See the license for more details.
 # -----------------------------------------------------------
-#  
-#  Author: Enrico Sirola <enrico.sirola@statpro.com> 
+#
+#  Author: Enrico Sirola <enrico.sirola@statpro.com>
 
 """DRMAA C library function wrappers"""
 
-from ctypes import * 
+from ctypes import *
 from ctypes.util import find_library
 from drmaa.errors import error_check, error_buffer
+import os
 
-libpath = find_library('drmaa')
+# the name of the OS environment variable optionally
+# containing the full path to the drmaa library
+_drmaa_lib_env_name = 'DRMAA_LIBRARY'
 
-if libpath is None:
-    import os
-    from os.path import join
-    import sys
-    if sys.platform.startswith('linux') \
-           and 'SGE_ROOT' in os.environ \
-           and 'LD_LIBRARY_PATH' in os.environ:
-        # linux hack
-        libpath = join([ x for x in os.environ['LD_LIBRARY_PATH'].split(':')
-                         if x.startswith(os.environ['SGE_ROOT']) ][0], 'libdrmaa.so')
-    else:
-        raise RuntimeError('cannot find drmaa library, please set the libpath variable by hand into file %s' % __file__)
+if _drmaa_lib_env_name in os.environ:
+    libpath = os.environ[_drmaa_lib_env_name]
+else:
+    libpath = find_library('drmaa')
 
 _lib = cdll.LoadLibrary(libpath)
 

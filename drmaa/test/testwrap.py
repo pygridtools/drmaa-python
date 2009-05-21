@@ -1,20 +1,20 @@
 # -----------------------------------------------------------
-#  Copyright (C) 2009 StatPro Italia s.r.l. 
-#                                                            
-#  StatPro Italia                                            
-#  Via G. B. Vico 4                                          
-#  I-20123 Milano                                            
-#  ITALY                                                     
-#                                                            
-#  phone: +39 02 96875 1                                     
-#  fax:   +39 02 96875 605                                   
-#                                                            
-#  email: info@riskmap.net                                   
-#                                                            
-#  This program is distributed in the hope that it will be   
-#  useful, but WITHOUT ANY WARRANTY; without even the        
-#  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR   
-#  PURPOSE. See the license for more details.                
+#  Copyright (C) 2009 StatPro Italia s.r.l.
+#
+#  StatPro Italia
+#  Via G. B. Vico 4
+#  I-20123 Milano
+#  ITALY
+#
+#  phone: +39 02 96875 1
+#  fax:   +39 02 96875 605
+#
+#  email: info@riskmap.net
+#
+#  This program is distributed in the hope that it will be
+#  useful, but WITHOUT ANY WARRANTY; without even the
+#  warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+#  PURPOSE. See the license for more details.
 # -----------------------------------------------------------
 
 """test module for the functional interface"""
@@ -111,9 +111,14 @@ class JobTemplateTests(unittest.TestCase):
 
     def test_dict_attribute(self):
         """dict attributes work"""
+        from drmaa.const import ATTR_BUFFER
         from os import environ
         self.jt.environment = environ
-        assert environ == self.jt.environment
+        for x in environ:
+            # attribute values could be truncated. For some reason,
+            # GE returns the first 1014 chars available (!)
+            assert_equal(environ[x][:ATTR_BUFFER-10],
+                         self.jt.environment[x][:ATTR_BUFFER-10])
 
     def test_attribute_names(self):
         """attribute names work"""
