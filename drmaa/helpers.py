@@ -136,7 +136,10 @@ def attributes_iterator(attributes):
         while drmaa_get_next_attr_value(attributes, buf, sizeof(buf))\
                 != const.NO_MORE_ELEMENTS:
             yield buf.value
-    finally:
+    except:
+        drmaa_release_attr_values(attributes)
+        raise
+    else:
         drmaa_release_attr_values(attributes)
 
 def adapt_rusage(rusage):
@@ -160,7 +163,10 @@ def attribute_names_iterator():
         while drmaa_get_next_attr_name(attrn_p.contents, name, _BUFLEN)\
                 != const.NO_MORE_ELEMENTS:
             yield name.value
-    finally:
+    except:
+        drmaa_release_attr_names(attrn_p.contents)
+        raise
+    else:
         drmaa_release_attr_names(attrn_p.contents)
 
 def vector_attribute_names_iterator():
@@ -171,7 +177,10 @@ def vector_attribute_names_iterator():
         while drmaa_get_next_attr_name(attrn_p.contents, name, _BUFLEN)\
                 != const.NO_MORE_ELEMENTS:
             yield name.value
-    finally:
+    except:
+        drmaa_release_attr_names(attrn_p.contents)
+        raise
+    else:
         drmaa_release_attr_names(attrn_p.contents)
 
 def run_bulk_job(jt, start, end, incr=1):
@@ -182,7 +191,10 @@ def run_bulk_job(jt, start, end, incr=1):
         while drmaa_get_next_job_id(jids.contents, jid, _BUFLEN)\
                 != const.NO_MORE_ELEMENTS:
             yield jid.value
-    finally:
+    except:
+        drmaa_release_job_ids(jids.contents)
+        raise
+    else:
         drmaa_release_job_ids(jids.contents)
 
 def c(f, *args):
