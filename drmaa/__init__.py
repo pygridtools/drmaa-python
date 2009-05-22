@@ -25,6 +25,9 @@ binding specification (http://www.ogf.org/documents/GFD.143.pdf).  See
 http://drmaa-python.googlecode.com for package info and download.
 """
 
+__version__='$Revision$'
+__date__='$Date$'
+
 __docformat__ = "restructuredtext en"
 
 import ctypes as _ct
