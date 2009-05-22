@@ -22,12 +22,9 @@ from setuptools import setup, find_packages
 packages = find_packages()
 package_data = dict([ (x, ['test/*.py']) for x in packages])
 
-# Dynamically calculate the version based on drmaa.__version__
-svn_version = __import__('drmaa').__version__
-
 setup(
     name="drmaa",
-    version="0.4a2"+svn_version,
+    version="0.4a2",
     packages=packages,
     package_data=package_data,
     author="Enrico Sirola",
