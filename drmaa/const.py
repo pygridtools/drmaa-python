@@ -123,7 +123,7 @@ def string_to_control_action(operation):
 def control_action_to_string(code):
     return _JOB_CONTROL[code]
 def status_to_string(status):
-    return _JOB_PS(status)
+    return _JOB_PS[status]
 
 _JOB_PS = { 
     0x00: JobState.UNDETERMINED,

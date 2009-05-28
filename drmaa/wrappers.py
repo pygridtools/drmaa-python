@@ -51,8 +51,8 @@ drmaa_exit.argtypes = [STRING, size_t]
 def init(contact=None):
     return _lib.drmaa_init(contact, error_buffer, sizeof(error_buffer))
 
-_lib.drmaa_exit.argtypes = [c_char_p, c_size_t] 
-_lib.drmaa_init.restype = error_check 
+_lib.drmaa_exit.argtypes = [c_char_p, c_size_t]
+_lib.drmaa_init.restype = error_check
 def exit():
     return _lib.drmaa_exit(error_buffer, sizeof(error_buffer))
 
