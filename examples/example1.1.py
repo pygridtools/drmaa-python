@@ -1,19 +1,18 @@
 #!/usr/bin/env python
 
-import DRMAA
+import drmaa
 
 def main():
     """Create a session, show that each session has an id,
     use session id to disconnect, then reconnect. Then exit"""
-    s=DRMAA.Session()
-    s.init()
-    print 'A session was started successfullly'
-    response = s.getContact()
-    print 'getContact() returns: ' + response
+    s = drmaa.Session()
+    print 'A session was started successfully'
+    response = s.contact
+    print 'session contact returns: ' + response
     s.exit()
     print 'Exited from session'
 
-    s.init(response)
+    s.initialize(response)
     print 'Session was restarted successfullly'
     s.exit()
     

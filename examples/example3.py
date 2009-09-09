@@ -1,28 +1,25 @@
 #!/usr/bin/env python
 
-import DRMAA
+import drmaa
 import os
 
 def main():
     """Submit a job and wait for it to finish.
-    Note, need file called sleeper.sh in home directory. An example:
-    echo 'Hello World $1'
+    Note, need file called sleeper.sh in home directory.
     """
-    s=DRMAA.Session()
-    s.init()
+    s = drmaa.Session()
 
     print 'Creating job template'
     jt = s.createJobTemplate()
     jt.remoteCommand = os.getcwd() + '/sleeper.sh'
     jt.args = ['42','Simon says:']
-    jt.joinFiles=True
-    jt.outputPath=":"+DRMAA.JobTemplate.HOME_DIRECTORY+'/tmp/DRMAA_JOB_OUT'
+    jt.joinFiles = True
     
     jobid = s.runJob(jt)
     print 'Your job has been submitted with id ' + jobid
 
-    retval = s.wait(jobid, DRMAA.Session.TIMEOUT_WAIT_FOREVER)
-    print 'Job: ' + str(retval.getJobId()) + ' finished with code ' + str(retval.getExitStatus())
+    retval = s.wait(jobid, drmaa.Session.TIMEOUT_WAIT_FOREVER)
+    print 'Job: ' + str(retval.jobId) + ' finished with status ' + str(retval.hasExited)
 
     print 'Cleaning up'
     s.deleteJobTemplate(jt)

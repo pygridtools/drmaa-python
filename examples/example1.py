@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 
-import DRMAA
+import drmaa
 
 def main():
-    """Create a DRMAA session and exit"""
-    s=DRMAA.Session()
-    print 'A DRMAA object was created'
-    s.init()
+    """Create a drmaa session and exit"""
+    s=drmaa.Session()
     print 'A session was started successfully'
     s.exit()
 
