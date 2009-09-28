@@ -33,7 +33,7 @@ try:
 except ImportError: # pre 2.6 behaviour
     import nt as _nt
 
-class BoolConverter(object):
+class YesNoConverter(object):
     """Helper class to convert to/from bool attributes."""
     @staticmethod
     def to_drmaa(value):
@@ -42,6 +42,19 @@ class BoolConverter(object):
     @staticmethod
     def from_drmaa(value):
         if value == 'y':
+            return True
+        else:
+            return False
+
+class ZeroOneConverter(object):
+    """Helper class to convert to/from bool attributes."""
+    @staticmethod
+    def to_drmaa(value):
+        if value: return '1'
+        else: return '0'
+    @staticmethod
+    def from_drmaa(value):
+        if value == '1':
             return True
         else:
             return False

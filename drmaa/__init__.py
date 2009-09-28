@@ -108,7 +108,7 @@ A (DRM-dependant) opaque string to be passed to the DRM representing
 other directives.
 """
     blockEmail              = _h.Attribute(_c.BLOCK_EMAIL,
-                                           type_converter=_h.BoolConverter)
+                                           type_converter=_h.ZeroOneConverter)
     """False id this job should send an email, True otherwise."""
     startTime               = _h.Attribute(_c.START_TIME           )
     """The job start time, a partial timestamp string."""
@@ -121,7 +121,7 @@ other directives.
     errorPath               = _h.Attribute(_c.ERROR_PATH           )
     """The path to a file representing job's stderr."""
     joinFiles               = _h.Attribute(_c.JOIN_FILES,
-                                           type_converter=_h.BoolConverter)
+                                           type_converter=_h.YesNoConverter)
     """True if stdin and stdout should be merged, False otherwise."""
     # the following is available on ge6.2 only if enabled via cluster
     # configuration

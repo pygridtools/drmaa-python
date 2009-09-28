@@ -124,5 +124,19 @@ class JobTemplateTests(unittest.TestCase):
         """attribute names work"""
         assert len(self.jt.attributeNames) > 0
 
+    def test_block_email(self):
+        """blockEmail works"""
+        self.jt.blockEmail = True
+        assert self.jt.blockEmail == True
+        self.jt.blockEmail = False
+        assert self.jt.blockEmail == False
+
+    def test_join_files(self):
+        """joinFiles works"""
+        self.jt.joinFiles = True
+        assert self.jt.joinFiles == True
+        self.jt.joinFiles = False
+        assert self.jt.joinFiles == False
+
     def tearDown(self):
         Session.deleteJobTemplate(self.jt)
