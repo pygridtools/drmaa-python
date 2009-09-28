@@ -68,7 +68,7 @@ from drmaa.errors import (AlreadyActiveSessionException,
 Version = _h.Version
 JobInfo = _nt.namedtuple("JobInfo",
                          """jobId hasExited hasSignal terminatedSignal
-                            hasCoreDump wasAborted resourceUsage""")
+                            hasCoreDump wasAborted exitStatus resourceUsage""")
 # FileTransferMode = _nt.namedtuple("FileTransferMode",
 #                                   """transferInputStream transferOutputStream
 #                                      transferErrorStream""")
@@ -487,7 +487,7 @@ out before the job finished.)
         _h.c(_w.drmaa_wtermsig, term_signal, _ct.sizeof(term_signal), stat)
         return JobInfo(jobId, bool(exited), bool(signaled),
                        term_signal.value, bool(coredumped),
-                       bool(aborted), res_usage)
+                       bool(aborted), int(exit_status.value), res_usage)
 
     # takes string, returns JobState instance
     @staticmethod
