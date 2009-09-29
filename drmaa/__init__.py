@@ -107,8 +107,9 @@ list of attribute names of the JobTemplate instances.
 A (DRM-dependant) opaque string to be passed to the DRM representing
 other directives.
 """
-    blockEmail              = _h.Attribute(_c.BLOCK_EMAIL,
-                                           type_converter=_h.ZeroOneConverter)
+    blockEmail              = _h.Attribute(
+        _c.BLOCK_EMAIL,
+        type_converter=_h.BoolConverter(true='1', false='0'))
     """False id this job should send an email, True otherwise."""
     startTime               = _h.Attribute(_c.START_TIME           )
     """The job start time, a partial timestamp string."""
@@ -120,8 +121,9 @@ other directives.
     """The path to a file representing job's stdout."""
     errorPath               = _h.Attribute(_c.ERROR_PATH           )
     """The path to a file representing job's stderr."""
-    joinFiles               = _h.Attribute(_c.JOIN_FILES,
-                                           type_converter=_h.YesNoConverter)
+    joinFiles               = _h.Attribute(
+        _c.JOIN_FILES,
+        type_converter=_h.BoolConverter())
     """True if stdin and stdout should be merged, False otherwise."""
     # the following is available on ge6.2 only if enabled via cluster
     # configuration
@@ -166,7 +168,7 @@ WRITE ME.
     args  = _h.VectorAttribute(_c.V_ARGV)
     """The job's command argument list."""
     # dict attributes
-    environment = _h.DictAttribute(_c.V_ENV)
+    jobEnvironment = _h.DictAttribute(_c.V_ENV)
     """The job's environment dict."""
 
     _as_parameter_ = None
