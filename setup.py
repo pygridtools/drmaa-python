@@ -24,7 +24,7 @@ package_data = dict([ (x, ['test/*.py']) for x in packages])
 
 setup(
     name="drmaa",
-    version="0.4a2",
+    version="0.4a3",
     packages=packages,
     package_data=package_data,
     author="Enrico Sirola",
