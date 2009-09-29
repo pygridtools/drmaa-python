@@ -38,9 +38,10 @@ setup(
     test_suite='nose.collector',
     classifiers="""\
 Development Status :: 3 - Alpha
-Intended Audience :: Developers
 Operating System :: OS Independent
 Intended Audience :: System Administrators
+Intended Audience :: Developers
+Intended Audience :: Science/Research
 License :: OSI Approved :: BSD License
 Programming Language :: Python :: 2
 Topic :: Software Development :: Libraries :: Python Modules
