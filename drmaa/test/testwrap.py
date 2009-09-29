@@ -19,9 +19,10 @@
 
 """test module for the functional interface"""
 
-from drmaa import *
 import unittest
 from nose.tools import assert_equal
+from drmaa import *
+from drmaa import const as c
 
 def setup():
     "initialize DRMAA library"
@@ -71,7 +72,7 @@ class Submit(SubmitBase):
         try:
             Session.wait(self.jid, Session.TIMEOUT_WAIT_FOREVER)
         except Exception, e:
-            assert e.message.startswith('code 24') # no rusage
+            assert e.args[0].startswith('code 24') # no rusage
 
 class JobTemplateTests(unittest.TestCase):
     def setUp(self):
@@ -79,18 +80,18 @@ class JobTemplateTests(unittest.TestCase):
 
     def test_scalar_attributes(self):
         """scalar attributes work"""
-        for name, value in [("remoteCommand"           ,'pippo'),
-                            ("jobSubmissionState"      ,'drmaa_active'),
-                            ("workingDirectory"        ,'pippo'),
-                            ("jobCategory"             ,'pippo'),
-                            ("nativeSpecification"     ,'-shell yes'),
-                            ("blockEmail"              , False),
-                            ("startTime"               ,'00:01'),
-                            ("jobName"                 ,'pippo'),
-                            ("inputPath"               ,'/tmp/input'),
-                            ("outputPath"              ,'/tmp/output'),
-                            ("errorPath"               ,'/tmp/error'),
-                            ("joinFiles"               ,True),]:
+        for name, value in [("remoteCommand", 'cat'),
+                            ("jobSubmissionState", c.SUBMISSION_STATE_ACTIVE),
+                            ("workingDirectory", JobTemplate.HOME_DIRECTORY),
+                            #("jobCategory", '/tmp'),
+                            ("nativeSpecification", '-shell yes'),
+                            ("blockEmail", False),
+                            #("startTime", '00:01'),
+                            ("jobName", 'pippo'),
+                            ("inputPath", ":%s" % c.PLACEHOLDER_HD),
+                            ("outputPath", ":%s/pippo.out" % c.PLACEHOLDER_HD),
+                            ("errorPath", ":%s/pippo.out" % c.PLACEHOLDER_HD),
+                            ("joinFiles", True),]:
                             #("transferFiles"           ,'i')
                             #("deadlineTime"            ,'10'),
                             #("hardWallclockTimeLimit"  ,'10:00'),
@@ -99,6 +100,14 @@ class JobTemplateTests(unittest.TestCase):
                             #("softRunDurationLimit"    ,'00:01:00')]:
             setattr(self.jt, name, value)
             assert getattr(self.jt, name) == value
+
+    # skipping this. the parameters above have to be tweaked a bit
+    def xtest_tmp(self):
+        self.test_scalar_attributes()
+        self.jt.args=['.colordb']
+        jid=Session.runJob(self.jt)
+        jinfo = Session.wait(jid)
+        print jinfo
 
     def test_vector_attributes(self):
         """vector attributes work"""
