@@ -122,12 +122,12 @@ class JobTemplateTests(unittest.TestCase):
         """dict attributes work"""
         from drmaa.const import ATTR_BUFFER
         from os import environ
-        self.jt.environment = environ
+        self.jt.jobEnvironment = environ
         for x in environ:
             # attribute values could be truncated. For some reason,
             # GE returns the first 1014 chars available (!)
             assert_equal(environ[x][:ATTR_BUFFER-10],
-                         self.jt.environment[x][:ATTR_BUFFER-10])
+                         self.jt.jobEnvironment[x][:ATTR_BUFFER-10])
 
     def test_attribute_names(self):
         """attribute names work"""
