@@ -247,8 +247,8 @@ component.
 a Version object containing the major and minor version numbers of the
 DRMAA library. For DRMAA 1.0, major is 1 and minor is 0.
 """
-    def __init__(self, contactString=''):
-        self.initialize(contactString)
+    def __init__(self, contactString=None):
+        self.contactString = contactString
 
     # no return value
     @staticmethod
@@ -522,6 +522,7 @@ jobs return a FAILED status.
 
     def __enter__(self):
         """Context manager enter function"""
+        self.initialize(self.contactString)
         return self
 
     def __exit__(self, *_):

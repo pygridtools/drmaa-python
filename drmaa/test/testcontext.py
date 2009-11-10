@@ -12,6 +12,7 @@ def test_with_session():
 def test_with_jt():
     """'with' statement works with JobTemplate"""
     s = Session()
+    s.initialize()
     with s.createJobTemplate() as jt:
         jt.remoteCommand = 'sleep'
         jt.args = ['10']

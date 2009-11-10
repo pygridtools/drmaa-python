@@ -21,6 +21,3 @@ class Misc(TestCase):
     def test_drmaa_get_DRMAA_implementation(self):
         """DRMAA implementation attribute works"""
         print self.s.drmaaImplementation
-
-    def tearDown(self):
-        self.s.exit()
