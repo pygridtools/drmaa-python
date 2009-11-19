@@ -24,57 +24,61 @@
 from ctypes import create_string_buffer
 from drmaa.const import ERROR_STRING_BUFFER
 
-class AlreadyActiveSessionException(Exception):
+class DrmaaException(Exception):
+    """A common ancestor to all DRMAA Error classes."""
     pass
-class AuthorizationException(Exception):
+
+class AlreadyActiveSessionException(DrmaaException):
     pass
-class ConflictingAttributeValuesException(AttributeError):
+class AuthorizationException(DrmaaException):
     pass
-class DefaultContactStringException(Exception):
+class ConflictingAttributeValuesException(DrmaaException, AttributeError):
     pass
-class DeniedByDrmException(Exception):
+class DefaultContactStringException(DrmaaException):
     pass
-class DrmCommunicationException(Exception):
+class DeniedByDrmException(DrmaaException):
     pass
-class DrmsExitException(Exception):
+class DrmCommunicationException(DrmaaException):
     pass
-class DrmsInitException(Exception):
+class DrmsExitException(DrmaaException):
     pass
-class ExitTimeoutException(Exception):
+class DrmsInitException(DrmaaException):
     pass
-class HoldInconsistentStateException(Exception):
+class ExitTimeoutException(DrmaaException):
     pass
-class IllegalStateException(Exception):
+class HoldInconsistentStateException(DrmaaException):
     pass
-class InternalException(Exception):
+class IllegalStateException(DrmaaException):
     pass
-class InvalidAttributeFormatException(AttributeError):
+class InternalException(DrmaaException):
     pass
-class InvalidContactStringException(Exception):
+class InvalidAttributeFormatException(DrmaaException, AttributeError):
     pass
-class InvalidJobException(Exception):
+class InvalidContactStringException(DrmaaException):
     pass
-class InvalidJobTemplateException(Exception):
+class InvalidJobException(DrmaaException):
     pass
-class NoActiveSessionException(Exception):
+class InvalidJobTemplateException(DrmaaException):
     pass
-class NoDefaultContactStringSelectedException(Exception):
+class NoActiveSessionException(DrmaaException):
     pass
-class ReleaseInconsistentStateException(Exception):
+class NoDefaultContactStringSelectedException(DrmaaException):
     pass
-class ResumeInconsistentStateException(Exception):
+class ReleaseInconsistentStateException(DrmaaException):
     pass
-class SuspendInconsistentStateException(Exception):
+class ResumeInconsistentStateException(DrmaaException):
     pass
-class TryLaterException(Exception):
+class SuspendInconsistentStateException(DrmaaException):
     pass
-class UnsupportedAttributeException(AttributeError):
+class TryLaterException(DrmaaException):
     pass
-class InvalidArgumentException(AttributeError):
+class UnsupportedAttributeException(DrmaaException, AttributeError):
     pass
-class InvalidAttributeValueException(AttributeError):
+class InvalidArgumentException(DrmaaException, AttributeError):
     pass
-class OutOfMemoryException(MemoryError):
+class InvalidAttributeValueException(DrmaaException, AttributeError):
+    pass
+class OutOfMemoryException(DrmaaException, MemoryError):
     pass
 
 error_buffer = create_string_buffer(ERROR_STRING_BUFFER)
@@ -85,7 +89,7 @@ def error_check(code):
         try:
             raise _ERRORS[code-1]("code %s: %s" % (code, error_buffer.value))
         except IndexError:
-            raise Exception("code %s: %s" % (code, error_buffer.value))
+            raise DrmaaException("code %s: %s" % (code, error_buffer.value))
 
 # da vedere: NO_RUSAGE, NO_MORE_ELEMENTS
 _ERRORS = [ InternalException,
