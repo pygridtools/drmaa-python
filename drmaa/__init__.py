@@ -34,6 +34,8 @@ try:
 except ImportError: # pre 2.6 behaviour
     import nt as _nt
 
+__version__ = "$Revision$"
+
 import drmaa.const as _c
 from drmaa.const import JobState, JobControlAction, JobSubmissionState
 import drmaa.wrappers as _w
