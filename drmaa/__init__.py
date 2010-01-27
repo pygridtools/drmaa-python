@@ -473,9 +473,11 @@ single job more than once is when the previous call to wait() timed
 out before the job finished.)
 """
         stat = _ct.c_int()
+        jid_out = _ct.create_string_buffer(128)
+        job_id_out = _ct.c_int()
         rusage = _ct.pointer(_ct.POINTER(_w.drmaa_attr_values_t)())
-        _h.c(_w.drmaa_wait, jobId, None, 0, _ct.byref(stat), 
-             timeout, rusage)
+        _h.c(_w.drmaa_wait, jobId, jid_out, _ct.sizeof(jid_out),
+             _ct.byref(stat), timeout, rusage)
         res_usage = _h.adapt_rusage(rusage)
         exited = _ct.c_int()
         _h.c(_w.drmaa_wifexited, _ct.byref(exited), stat)
@@ -489,7 +491,7 @@ out before the job finished.)
         _h.c(_w.drmaa_wexitstatus, _ct.byref(exit_status), stat)
         term_signal = _ct.create_string_buffer(_c.SIGNAL_BUFFER)
         _h.c(_w.drmaa_wtermsig, term_signal, _ct.sizeof(term_signal), stat)
-        return JobInfo(jobId, bool(exited), bool(signaled),
+        return JobInfo(jid_out.value, bool(exited), bool(signaled),
                        term_signal.value, bool(coredumped),
                        bool(aborted), int(exit_status.value), res_usage)
 

@@ -23,6 +23,7 @@ import unittest
 from nose.tools import assert_equal
 from drmaa import *
 from drmaa import const as c
+from os import environ
 
 def setup():
     "initialize DRMAA library"
@@ -41,8 +42,10 @@ class SubmitBase(unittest.TestCase):
 
     def setUp(self):
         self.jt = jt = Session.createJobTemplate()
-        jt.args = ['2']
-        jt.remoteCommand = 'sleep'
+        environ['PIPPO'] = 'aaaa'
+        self.jt.jobEnvironment = environ
+        jt.args = ['-c', "import os; import pprint; pprint.pprint(os.environ.get('PIPPO'))"]
+        jt.remoteCommand = 'python'
         self.jid = Session.runJob(jt)
 
     def tearDown(self):
@@ -57,7 +60,15 @@ class Submit(SubmitBase):
     def test_wait(self):
         """waiting for job completion"""
         jinfo = Session.wait(self.jid)
-        #print jinfo
+        assert jinfo.jobId == self.jid
+        assert hasattr(jinfo, 'hasExited')
+        assert hasattr(jinfo, 'hasExited') and type(jinfo.hasExited) is bool
+        assert hasattr(jinfo, 'hasSignal') and type(jinfo.hasSignal) is bool
+        assert hasattr(jinfo, 'terminatedSignal') and type(jinfo.terminatedSignal) is str
+        assert hasattr(jinfo, 'hasCoreDump') and type(jinfo.hasCoreDump) is bool
+        assert hasattr(jinfo, 'wasAborted') and type(jinfo.wasAborted) is bool
+        assert hasattr(jinfo, 'exitStatus') and type(jinfo.exitStatus) is int
+        assert hasattr(jinfo, 'resourceUsage') and type(jinfo.resourceUsage) is dict
 
     def test_sync(self):
         """sync with a job"""
@@ -121,7 +132,6 @@ class JobTemplateTests(unittest.TestCase):
     def test_dict_attribute(self):
         """dict attributes work"""
         from drmaa.const import ATTR_BUFFER
-        from os import environ
         self.jt.jobEnvironment = environ
         for x in environ:
             # attribute values could be truncated. For some reason,
