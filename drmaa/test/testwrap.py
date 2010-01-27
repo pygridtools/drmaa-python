@@ -42,14 +42,32 @@ class SubmitBase(unittest.TestCase):
 
     def setUp(self):
         self.jt = jt = Session.createJobTemplate()
-        environ['PIPPO'] = 'aaaa'
-        self.jt.jobEnvironment = environ
-        jt.args = ['-c', "import os; import pprint; pprint.pprint(os.environ.get('PIPPO'))"]
         jt.remoteCommand = 'python'
+        jt.args = ['-c', "print 'hello from python!'"]
+        if hasattr(self, 'jt_tweaks'):
+            self.jt_tweaks()
         self.jid = Session.runJob(jt)
 
     def tearDown(self):
         Session.deleteJobTemplate(self.jt)
+
+class EnvironmentTest(SubmitBase):
+
+    def jt_tweaks(self):
+        environ['PIPPO'] = 'aaaa'
+        self.jt.args = (
+            ["-c",
+             "from os import environ as env; assert ('PIPPO' in env) and (env['PIPPO'] == 'aaaa')"])
+        self.jt.jobEnvironment = environ
+
+    def test_environment(self):
+        """environment variables are correctly passed to submitted jobs"""
+        jinfo = Session.wait(self.jid)
+        assert jinfo.jobId == self.jid
+        assert hasattr(jinfo, 'hasExited')
+        print jinfo.exitStatus
+        assert hasattr(jinfo, 'exitStatus') and jinfo.exitStatus == 0
+
 
 class Submit(SubmitBase):
 
