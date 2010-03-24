@@ -47,6 +47,16 @@ class BoolConverter(object):
         else:
             return False
 
+class IntConverter(object):
+    """Helper class to convert to/from float attributes."""
+    @staticmethod
+    def to_drmaa(value):
+        return str(value)
+
+    @staticmethod
+    def from_drmaa(value):
+        return int(value)
+
 class SessionStringAttribute(object):
 
     def __init__(self, drmaa_function):
@@ -73,7 +83,7 @@ class SessionVersionAttribute(object):
         return Version(major.value, minor.value)
 
 class Attribute(object):
-    """A DRMAA attribute, to managed with scalar C DRMAA attribute management functions."""
+    """A DRMAA attribute, to be managed with scalar C DRMAA attribute management functions."""
     def __init__(self, name, type_converter=None):
         """\
 Attribute constructor.

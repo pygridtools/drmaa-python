@@ -139,27 +139,25 @@ This option might require specific DRM configuration (it does on SGE).
     # it will raise if you try to access these attrs
     deadlineTime            = _h.Attribute(_c.DEADLINE_TIME        )
     """The job deadline time, a partial timestamp string."""
-    # these will also probably need specific converters
-    # (should receive float values)
-    hardWallclockTimeLimit  = _h.Attribute(_c.WCT_HLIMIT           )
+    hardWallclockTimeLimit  = _h.Attribute(_c.WCT_HLIMIT, _h.IntConverter)
     """\
 'Hard' Wallclock time limit, in seconds.
 
 The job will be killed by the DRM if it takes more than
 'hardWallclockTimeLimit' to complete.
 """
-    softWallclockTimeLimit  = _h.Attribute(_c.WCT_SLIMIT           )
+    softWallclockTimeLimit  = _h.Attribute(_c.WCT_SLIMIT, _h.IntConverter)
     """\
 'Soft' Wallclock time limit, in seconds.
 
 The job will be signaled by the DRM if it takes more than
 'hardWallclockTimeLimit' to complete.
 """
-    hardRunDurationLimit    = _h.Attribute(_c.DURATION_HLIMIT      )
+    hardRunDurationLimit    = _h.Attribute(_c.DURATION_HLIMIT, _h.IntConverter)
     """\
 WRITE ME.
 """
-    softRunDurationLimit    = _h.Attribute(_c.DURATION_SLIMIT      )
+    softRunDurationLimit    = _h.Attribute(_c.DURATION_SLIMIT, _h.IntConverter)
     """\
 WRITE ME.
 """
