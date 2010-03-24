@@ -9,7 +9,7 @@ def main():
     Note, need file called sleeper.sh in home directory.
     """
     s = drmaa.Session()
-
+    s.initialize()
     print 'Creating job template'
     jt = s.createJobTemplate()
     jt.remoteCommand = os.getcwd() + '/sleeper.sh'
@@ -35,7 +35,7 @@ def main():
 
     for ix in range(10):
         print 'Checking ' + str(ix) + ' of 10 times'
-        print decodestatus(s.jobStatus(jobid))
+        print decodestatus[s.jobStatus(jobid)]
         time.sleep(5)
     
     print 'Cleaning up'

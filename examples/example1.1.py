@@ -6,6 +6,7 @@ def main():
     """Create a session, show that each session has an id,
     use session id to disconnect, then reconnect. Then exit"""
     s = drmaa.Session()
+    s.initialize()
     print 'A session was started successfully'
     response = s.contact
     print 'session contact returns: ' + response

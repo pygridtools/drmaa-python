@@ -8,7 +8,7 @@ def main():
     Note, need file called sleeper.sh in current directory.
     """
     s = drmaa.Session()
-
+    s.initialize()
     print 'Creating job template'
     jt = s.createJobTemplate()
     jt.remoteCommand = os.getcwd() + '/sleeper.sh'

@@ -5,6 +5,7 @@ import drmaa
 def main():
     """Query the system."""
     s = drmaa.Session()
+    s.initialize()
     print 'A DRMAA object was created'
     print 'Supported contact strings: ' + s.contact
     print 'Supported DRM systems: ' + str(s.drmsInfo)

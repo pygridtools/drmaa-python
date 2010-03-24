@@ -31,6 +31,7 @@ def main():
         exit(1)
     job_path=argv[1]
     s=drmaa.Session()
+    s.initialize()
     # submit some bulk jobs
     jt=init_job_template(s.createJobTemplate(), job_path, argv[2:], True)
     all_jobids = []

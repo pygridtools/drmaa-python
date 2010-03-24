@@ -9,7 +9,7 @@ def main():
     waits for the jobs that it submitted.
     """
     s = drmaa.Session()
-
+    s.initialize()
     print 'Creating job template'
     jt = s.createJobTemplate()
     jt.remoteCommand = os.getcwd() + '/sleeper.sh'
