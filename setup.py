@@ -24,7 +24,7 @@ package_data = dict([ (x, ['test/*.py']) for x in packages])
 
 setup(
     name="drmaa",
-    version="0.4b2",
+    version="0.4b3",
     packages=packages,
     package_data=package_data,
     author="Enrico Sirola",
@@ -37,7 +37,7 @@ setup(
     tests_require='nose',
     test_suite='nose.collector',
     classifiers="""\
-Development Status :: 3 - Alpha
+Development Status :: 4 - Beta
 Operating System :: OS Independent
 Intended Audience :: System Administrators
 Intended Audience :: Developers
