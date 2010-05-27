@@ -65,7 +65,7 @@ class EnvironmentTest(SubmitBase):
         jinfo = Session.wait(self.jid)
         assert jinfo.jobId == self.jid
         assert hasattr(jinfo, 'hasExited')
-        print jinfo.exitStatus
+        #print jinfo.exitStatus
         assert hasattr(jinfo, 'exitStatus') and jinfo.exitStatus == 0
 
 
@@ -174,6 +174,13 @@ class JobTemplateTests(unittest.TestCase):
         assert self.jt.joinFiles == True
         self.jt.joinFiles = False
         assert self.jt.joinFiles == False
+
+    def test_submission_state(self):
+        """submission state attributes work"""
+        self.jt.jobSubmissionState = JobSubmissionState.HOLD_STATE
+        assert self.jt.jobSubmissionState == JobSubmissionState.HOLD_STATE
+        self.jt.jobSubmissionState = JobSubmissionState.ACTIVE_STATE
+        assert self.jt.jobSubmissionState == JobSubmissionState.ACTIVE_STATE
 
     def tearDown(self):
         Session.deleteJobTemplate(self.jt)

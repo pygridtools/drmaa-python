@@ -141,8 +141,8 @@ _JOB_PS = {
 
 # State at submission time
 class JobSubmissionState(object):
-    HOLD_STATE='hold'
-    ACTIVE_STATE='active'
+    HOLD_STATE=SUBMISSION_STATE_HOLD
+    ACTIVE_STATE=SUBMISSION_STATE_ACTIVE
 
 _SUBMISSION_STATE = [
     JobSubmissionState.HOLD_STATE,
