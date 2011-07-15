@@ -42,7 +42,7 @@ if libpath is None:
                        _drmaa_lib_env_name))
     raise RuntimeError(errmsg)
 
-_lib = cdll.LoadLibrary(libpath)
+_lib = CDLL(libpath, mode=RTLD_GLOBAL)
 
 STRING = c_char_p
 size_t = c_ulong
