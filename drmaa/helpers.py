@@ -29,9 +29,9 @@ import drmaa.const as const
 _BUFLEN=const.ATTR_BUFFER
 
 try:
-    import namedtuple as _nt
+    from collections import namedtuple
 except ImportError: # pre 2.6 behaviour
-    import nt as _nt
+    from drmaa.nt import namedtuple
 
 class BoolConverter(object):
     """Helper class to convert to/from bool attributes."""
@@ -66,7 +66,7 @@ class SessionStringAttribute(object):
         c(self._f, buf, _ct.sizeof(buf))
         return buf.value
 
-Version = _nt.namedtuple("Version", "major minor")
+Version = namedtuple("Version", "major minor")
 Version.__str__ = lambda x: "%s.%s" % (x.major, x.minor)
 #Version.__doc__ = """\
 #An object representing the DRMAA version.
@@ -105,7 +105,7 @@ Attribute constructor.
         c(drmaa_set_attribute, instance, self.name, v)
     def __get__(self, instance, _):
         attr_buffer = create_string_buffer(const.ATTR_BUFFER)
-        c(drmaa_get_attribute, instance, self.name, 
+        c(drmaa_get_attribute, instance, self.name,
           attr_buffer, sizeof(attr_buffer))
         if self.converter:
             return self.converter.from_drmaa(attr_buffer.value)
@@ -114,7 +114,7 @@ Attribute constructor.
 
 class VectorAttribute(object):
     """\
-A DRMAA attribute representing a list. 
+A DRMAA attribute representing a list.
 
 To be managed with vector C DRMAA attribute management functions."""
     def __init__(self, name):

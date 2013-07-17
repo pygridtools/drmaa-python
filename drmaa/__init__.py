@@ -30,9 +30,9 @@ __docformat__ = "restructuredtext en"
 import ctypes as _ct
 
 try:
-    import namedtuple as _nt
+    from collections import namedtuple
 except ImportError: # pre 2.6 behaviour
-    import nt as _nt
+    from drmaa.nt import namedtuple
 
 __version__ = "$Revision$"[11:-2]
 
@@ -68,10 +68,10 @@ from drmaa.errors import (AlreadyActiveSessionException,
                           OutOfMemoryException,)
 
 Version = _h.Version
-JobInfo = _nt.namedtuple("JobInfo",
+JobInfo = namedtuple("JobInfo",
                          """jobId hasExited hasSignal terminatedSignal
                             hasCoreDump wasAborted exitStatus resourceUsage""")
-# FileTransferMode = _nt.namedtuple("FileTransferMode",
+# FileTransferMode = namedtuple("FileTransferMode",
 #                                   """transferInputStream transferOutputStream
 #                                      transferErrorStream""")
 
@@ -359,7 +359,7 @@ the tasks submitted through this method.
     @staticmethod
     def control(jobId, operation):
         """\
-Used to hold, release, suspend, resume, or kill the job identified by jobId.  
+Used to hold, release, suspend, resume, or kill the job identified by jobId.
 
 :Parameters:
   jobId : string
@@ -429,7 +429,7 @@ If the call exits before the
 timeout has elapsed, all the jobs have been waited on or there was an
 interrupt. If the invocation exits on timeout, an ExitTimeoutException
 is thrown. The caller should check system time before and after this
-call in order to be sure of how much time has passed.  
+call in order to be sure of how much time has passed.
 """
         if dispose: d = 1
         else: d = 0
@@ -439,7 +439,7 @@ call in order to be sure of how much time has passed.
     @staticmethod
     def wait(jobId, timeout=-1):
         """\
-Wait for a job with jobId to finish execution or fail. 
+Wait for a job with jobId to finish execution or fail.
 
 :Parameters:
   `jobId` : str
@@ -449,7 +449,7 @@ Wait for a job with jobId to finish execution or fail.
     jobId, this routine will wait for any job from the session
   `timeout` : float
     The timeout value is used to specify the desired behavior when a
-    result is not immediately available. 
+    result is not immediately available.
 
     The value `Session.TIMEOUT_WAIT_FOREVER` may be specified to wait
     indefinitely for a result. The value `Session.TIMEOUT_NO_WAIT` may
