@@ -133,7 +133,7 @@ To be managed with vector C DRMAA attribute management functions."""
     def __init__(self, name):
         self.name = name
     def __set__(self, instance, value):
-        v = [ "%s=%s" % (k, v) for (k, v) in value.iteritems() ]
+        v = [ "%s=%s" % (k, v) for (k, v) in value.items() ]
         c(drmaa_set_vector_attribute, instance, self.name, string_vector(v))
     def __get__(self, instance, _):
         x = [ i.split('=', 1) for i in list(vector_attribute_iterator(
