@@ -25,6 +25,7 @@ internal helpers
 """
 
 import ctypes as _ct
+import sys
 
 import drmaa.const as const
 from drmaa.wrappers import *
