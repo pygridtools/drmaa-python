@@ -121,6 +121,8 @@ class Attribute(object):
     def __set__(self, instance, value):
         if self.converter:
             v = self.converter.to_drmaa(value)
+        elif sys.version_info >= (3, 0) and isinstance(value, str):
+            v = value.encode()
         else:
             v = value
         c(drmaa_set_attribute, instance, self.name, v)
