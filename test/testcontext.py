@@ -1,6 +1,10 @@
-from __future__ import print_function, with_statement
+'''
+Tests related to with using context managers.
+'''
 
-from drmaa import *
+from __future__ import absolute_import, print_function, unicode_literals
+
+from drmaa import Session
 
 
 def test_with_session():

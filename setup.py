@@ -16,6 +16,7 @@
 # -----------------------------------------------------------
 #
 #  Author: Enrico Sirola <enrico.sirola@statpro.com>
+#  Author: Dan Blanchard <dblanchard@ets.org>
 
 from setuptools import setup, find_packages
 
@@ -32,8 +33,7 @@ setup(
     description="a python DRMAA library",
     license="BSD",
     keywords="python grid hpc drmaa",
-    url="http://drmaa-python.googlecode.com",
-    download_url="http://code.google.com/p/drmaa-python/downloads/list",
+    url="https://github.com/drmaa-python/drmaa-python",
     tests_require='nose',
     test_suite='nose.collector',
     classifiers="""\

@@ -21,15 +21,22 @@
 test module for the functional interface
 """
 
-from __future__ import print_function
+from __future__ import absolute_import, print_function, unicode_literals
 
 import unittest
 from os import environ
 
-from nose.tools import assert_equal
+from nose.tools import eq_
 
-from drmaa import *
-from drmaa import const as c
+from drmaa import Session, JobTemplate
+from drmaa.const import (JobSubmissionState, PLACEHOLDER_HD,
+                         SUBMISSION_STATE_ACTIVE)
+
+
+# Python 3 compatability help
+if sys.version_info < (3, 0):
+    bytes = str
+    str = unicode
 
 
 def setup():
@@ -74,7 +81,7 @@ class EnvironmentTest(SubmitBase):
     def test_environment(self):
         """environment variables are correctly passed to submitted jobs"""
         jinfo = Session.wait(self.jid)
-        assert jinfo.jobId == self.jid
+        eq_(jinfo.jobId, self.jid)
         assert hasattr(jinfo, 'hasExited')
         assert hasattr(jinfo, 'exitStatus') and jinfo.exitStatus == 0
 
@@ -88,18 +95,15 @@ class Submit(SubmitBase):
     def test_wait(self):
         """waiting for job completion"""
         jinfo = Session.wait(self.jid)
-        assert jinfo.jobId == self.jid
+        eq_(jinfo.jobId, self.jid)
         assert hasattr(jinfo, 'hasExited')
         assert hasattr(jinfo, 'hasExited') and type(jinfo.hasExited) is bool
         assert hasattr(jinfo, 'hasSignal') and type(jinfo.hasSignal) is bool
-        assert hasattr(jinfo, 'terminatedSignal') and type(
-            jinfo.terminatedSignal) is str
-        assert hasattr(jinfo, 'hasCoreDump') and type(
-            jinfo.hasCoreDump) is bool
+        assert hasattr(jinfo, 'terminatedSignal') and type(jinfo.terminatedSignal) is str
+        assert hasattr(jinfo, 'hasCoreDump') and type(jinfo.hasCoreDump) is bool
         assert hasattr(jinfo, 'wasAborted') and type(jinfo.wasAborted) is bool
         assert hasattr(jinfo, 'exitStatus') and type(jinfo.exitStatus) is int
-        assert hasattr(jinfo, 'resourceUsage') and type(
-            jinfo.resourceUsage) is dict
+        assert hasattr(jinfo, 'resourceUsage') and type(jinfo.resourceUsage) is dict
 
     def test_sync(self):
         """sync with a job"""
@@ -125,17 +129,17 @@ class JobTemplateTests(unittest.TestCase):
     def test_scalar_attributes(self):
         """scalar attributes work"""
         for name, value in [("remoteCommand", 'cat'),
-                            ("jobSubmissionState", c.SUBMISSION_STATE_ACTIVE),
+                            ("jobSubmissionState", SUBMISSION_STATE_ACTIVE),
                             ("workingDirectory", JobTemplate.HOME_DIRECTORY),
                             ("nativeSpecification", '-shell yes'),
                             ("blockEmail", False),
                             ("jobName", 'pippo'),
-                            ("inputPath", ":%s" % c.PLACEHOLDER_HD),
-                            ("outputPath", ":%s/pippo.out" % c.PLACEHOLDER_HD),
-                            ("errorPath", ":%s/pippo.out" % c.PLACEHOLDER_HD),
+                            ("inputPath", ":%s" % PLACEHOLDER_HD),
+                            ("outputPath", ":%s/pippo.out" % PLACEHOLDER_HD),
+                            ("errorPath", ":%s/pippo.out" % PLACEHOLDER_HD),
                             ("joinFiles", True)]:
             setattr(self.jt, name, value)
-            assert getattr(self.jt, name) == value
+            eq_(getattr(self.jt, name), value)
 
     # skipping this. the parameters above have to be tweaked a bit
     def xtest_tmp(self):
@@ -149,10 +153,10 @@ class JobTemplateTests(unittest.TestCase):
         """vector attributes work"""
         args = ['10', 'de', 'arglebargle']
         self.jt.args = args
-        assert self.jt.args == args
+        eq_(self.jt.args, args)
         em = ['baz@quz.edu', 'foo@bar.com']
         self.jt.email = em
-        assert self.jt.email == em
+        eq_(self.jt.email, em)
 
     def test_dict_attribute(self):
         """dict attributes work"""
@@ -161,8 +165,8 @@ class JobTemplateTests(unittest.TestCase):
         for x in environ:
             # attribute values could be truncated. For some reason,
             # GE returns the first 1014 chars available (!)
-            assert_equal(environ[x][:ATTR_BUFFER - 10],
-                         self.jt.jobEnvironment[x][:ATTR_BUFFER - 10])
+            eq_(environ[x][:ATTR_BUFFER - 10],
+                self.jt.jobEnvironment[x][:ATTR_BUFFER - 10])
 
     def test_attribute_names(self):
         """attribute names work"""
@@ -185,9 +189,9 @@ class JobTemplateTests(unittest.TestCase):
     def test_submission_state(self):
         """submission state attributes work"""
         self.jt.jobSubmissionState = JobSubmissionState.HOLD_STATE
-        assert self.jt.jobSubmissionState == JobSubmissionState.HOLD_STATE
+        eq_(self.jt.jobSubmissionState, JobSubmissionState.HOLD_STATE)
         self.jt.jobSubmissionState = JobSubmissionState.ACTIVE_STATE
-        assert self.jt.jobSubmissionState == JobSubmissionState.ACTIVE_STATE
+        eq_(self.jt.jobSubmissionState, JobSubmissionState.ACTIVE_STATE)
 
     def tearDown(self):
         Session.deleteJobTemplate(self.jt)

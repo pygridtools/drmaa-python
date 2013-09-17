@@ -1,8 +1,12 @@
-from __future__ import print_function
+'''
+Test miscenallenous helper functions.
+'''
+
+from __future__ import absolute_import, print_function, unicode_literals
 
 from unittest import TestCase
 
-from drmaa import *
+from drmaa import Session
 
 
 class Misc(TestCase):
