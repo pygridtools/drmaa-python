@@ -11,6 +11,7 @@ echo "gridengine-master shared/gridenginemaster string localhost" | sudo debconf
 echo "gridengine-master shared/gridenginecell string default" | sudo debconf-set-selections
 echo "gridengine-master shared/gridengineconfig boolean true" | sudo debconf-set-selections
 sudo apt-get install 'gridengine-*' libdrmaa1.0
+echo "Waiting 10 seconds for grid engine to come up..."
 sleep 10  # Wait for the server to come up, just in case
 export CORES=$(grep -c '^processor' /proc/cpuinfo)
 sed -i -r "s/template/$USER/" user_template
