@@ -63,7 +63,7 @@ class BoolConverter(object):
             true = true.encode()
         self.true = true
         if isinstance(false, str):
-            true = true.encode()
+            false = false.encode()
         self.false = false
 
     def to_drmaa(self, value):
