@@ -59,7 +59,7 @@ drmaa_exit.argtypes = [STRING, size_t]
 
 
 def py_drmaa_init(contact=None):
-    if not isinstance(contact, bytes):
+    if not isinstance(contact, bytes) and contact is not None:
         contact = contact.encode()
     return _lib.drmaa_init(contact, error_buffer, sizeof(error_buffer))
 
