@@ -25,49 +25,58 @@ binding specification (http://www.ogf.org/documents/GFD.143.pdf).  See
 http://drmaa-python.googlecode.com for package info and download.
 """
 
-__docformat__ = "restructuredtext en"
 
-import ctypes as _ct
+from ctypes import byref, c_int, create_string_buffer, pointer, POINTER, sizeof
 
 try:
     from collections import namedtuple
 except ImportError:  # pre 2.6 behaviour
     from drmaa.nt import namedtuple
 
-__version__ = "$Revision$"[11:-2]
-
-import drmaa.const as _c
-from drmaa.const import JobState, JobControlAction, JobSubmissionState
-import drmaa.wrappers as _w
-import drmaa.helpers as _h
-from drmaa.errors import (AlreadyActiveSessionException,
-                          AuthorizationException,
+from drmaa.const import (BLOCK_EMAIL, DEADLINE_TIME, DURATION_HLIMIT,
+                         DURATION_SLIMIT, ERROR_PATH, INPUT_PATH, JOB_CATEGORY,
+                         JOB_IDS_SESSION_ALL, JOB_IDS_SESSION_ANY, JOB_NAME,
+                         JobState, JobControlAction, JobSubmissionState,
+                         JOIN_FILES, JS_STATE, NATIVE_SPECIFICATION,
+                         OUTPUT_PATH, REMOTE_COMMAND, SIGNAL_BUFFER, START_TIME,
+                         status_to_string, string_to_control_action,
+                         TIMEOUT_NO_WAIT, TIMEOUT_WAIT_FOREVER, TRANSFER_FILES,
+                         V_ARGV, V_EMAIL, V_ENV, WCT_HLIMIT, WCT_SLIMIT, WD)
+from drmaa.errors import (AlreadyActiveSessionException, AuthorizationException,
                           ConflictingAttributeValuesException,
-                          DefaultContactStringException,
-                          DeniedByDrmException,
-                          DrmCommunicationException,
-                          DrmsExitException,
-                          DrmsInitException,
-                          ExitTimeoutException,
-                          HoldInconsistentStateException,
-                          IllegalStateException,
-                          InternalException,
-                          InvalidAttributeFormatException,
-                          InvalidContactStringException,
-                          InvalidJobException,
-                          InvalidJobTemplateException,
-                          NoActiveSessionException,
+                          DefaultContactStringException, DeniedByDrmException,
+                          DrmCommunicationException, DrmsExitException,
+                          DrmsInitException, ExitTimeoutException,
+                          HoldInconsistentStateException, IllegalStateException,
+                          InternalException, InvalidAttributeFormatException,
+                          InvalidContactStringException, InvalidJobException,
+                          InvalidJobTemplateException, NoActiveSessionException,
                           NoDefaultContactStringSelectedException,
                           ReleaseInconsistentStateException,
                           ResumeInconsistentStateException,
-                          SuspendInconsistentStateException,
-                          TryLaterException,
+                          SuspendInconsistentStateException, TryLaterException,
                           UnsupportedAttributeException,
                           InvalidArgumentException,
-                          InvalidAttributeValueException,
-                          OutOfMemoryException,)
+                          InvalidAttributeValueException, OutOfMemoryException)
+from drmaa.helpers import (adapt_rusage, Attribute, attribute_names_iterator,
+                           BoolConverter, c, DictAttribute, IntConverter,
+                           run_bulk_job, SessionStringAttribute,
+                           SessionVersionAttribute, string_vector,
+                           VectorAttribute, Version)
+from drmaa.wrappers import (drmaa_allocate_job_template, drmaa_attr_values_t,
+                            drmaa_control, drmaa_delete_job_template,
+                            drmaa_get_contact, drmaa_get_DRM_system,
+                            drmaa_get_DRMAA_implementation, drmaa_job_ps,
+                            drmaa_job_template_t, drmaa_run_job,
+                            drmaa_synchronize, drmaa_wait, drmaa_wcoredump,
+                            drmaa_wexitstatus, drmaa_wifaborted,
+                            drmaa_wifexited, drmaa_wifsignaled, drmaa_wtermsig,
+                            py_drmaa_exit, py_drmaa_init)
 
-Version = _h.Version
+
+__docformat__ = "restructuredtext en"
+__version__ = "$Revision$"[11:-2]
+
 JobInfo = namedtuple("JobInfo",
                      """jobId hasExited hasSignal terminatedSignal
                             hasCoreDump wasAborted exitStatus resourceUsage""")
@@ -92,43 +101,40 @@ class JobTemplate(object):
         This is apparently useless now, and should probably substituted by the
         list of attribute names of the JobTemplate instances.
         """
-        return list(_h.attribute_names_iterator())
+        return list(attribute_names_iterator())
 
     # scalar attributes
-    remoteCommand = _h.Attribute(_c.REMOTE_COMMAND)
+    remoteCommand = Attribute(REMOTE_COMMAND)
     """The command to be executed."""
-    jobSubmissionState = _h.Attribute(_c.JS_STATE)
+    jobSubmissionState = Attribute(JS_STATE)
     """The job status."""
-    workingDirectory = _h.Attribute(_c.WD)
+    workingDirectory = Attribute(WD)
     """The job working directory."""
-    jobCategory = _h.Attribute(_c.JOB_CATEGORY)
+    jobCategory = Attribute(JOB_CATEGORY)
     """The job category."""
-    nativeSpecification = _h.Attribute(_c.NATIVE_SPECIFICATION)
+    nativeSpecification = Attribute(NATIVE_SPECIFICATION)
     """
     A (DRM-dependant) opaque string to be passed to the DRM representing
     other directives.
     """
-    blockEmail = _h.Attribute(
-        _c.BLOCK_EMAIL,
-        type_converter=_h.BoolConverter(true='1', false='0'))
+    blockEmail = Attribute(BLOCK_EMAIL, type_converter=BoolConverter(true='1',
+                                                                     false='0'))
     """False id this job should send an email, True otherwise."""
-    startTime = _h.Attribute(_c.START_TIME)
+    startTime = Attribute(START_TIME)
     """The job start time, a partial timestamp string."""
-    jobName = _h.Attribute(_c.JOB_NAME)
+    jobName = Attribute(JOB_NAME)
     """The job Name."""
-    inputPath = _h.Attribute(_c.INPUT_PATH)
+    inputPath = Attribute(INPUT_PATH)
     """The path to a file representing job's stdin."""
-    outputPath = _h.Attribute(_c.OUTPUT_PATH)
+    outputPath = Attribute(OUTPUT_PATH)
     """The path to a file representing job's stdout."""
-    errorPath = _h.Attribute(_c.ERROR_PATH)
+    errorPath = Attribute(ERROR_PATH)
     """The path to a file representing job's stderr."""
-    joinFiles = _h.Attribute(
-        _c.JOIN_FILES,
-        type_converter=_h.BoolConverter())
+    joinFiles = Attribute(JOIN_FILES, type_converter=BoolConverter())
     """True if stdin and stdout should be merged, False otherwise."""
     # the following is available on ge6.2 only if enabled via cluster
     # configuration
-    transferFiles = _h.Attribute(_c.TRANSFER_FILES)
+    transferFiles = Attribute(TRANSFER_FILES)
     """
     True if file transfer should be enabled, False otherwise.
 
@@ -136,32 +142,32 @@ class JobTemplate(object):
     """
     # the following are apparently not available on ge 6.2
     # it will raise if you try to access these attrs
-    deadlineTime = _h.Attribute(_c.DEADLINE_TIME)
+    deadlineTime = Attribute(DEADLINE_TIME)
     """The job deadline time, a partial timestamp string."""
-    hardWallclockTimeLimit = _h.Attribute(_c.WCT_HLIMIT, _h.IntConverter)
+    hardWallclockTimeLimit = Attribute(WCT_HLIMIT, IntConverter)
     """
     'Hard' Wallclock time limit, in seconds.
 
     The job will be killed by the DRM if it takes more than
     'hardWallclockTimeLimit' to complete.
     """
-    softWallclockTimeLimit = _h.Attribute(_c.WCT_SLIMIT, _h.IntConverter)
+    softWallclockTimeLimit = Attribute(WCT_SLIMIT, IntConverter)
     """
     'Soft' Wallclock time limit, in seconds.
 
     The job will be signaled by the DRM if it takes more than
     'hardWallclockTimeLimit' to complete.
     """
-    hardRunDurationLimit = _h.Attribute(_c.DURATION_HLIMIT, _h.IntConverter)
-    softRunDurationLimit = _h.Attribute(_c.DURATION_SLIMIT, _h.IntConverter)
+    hardRunDurationLimit = Attribute(DURATION_HLIMIT, IntConverter)
+    softRunDurationLimit = Attribute(DURATION_SLIMIT, IntConverter)
 
     # vector attributes
-    email = _h.VectorAttribute(_c.V_EMAIL)
+    email = VectorAttribute(V_EMAIL)
     """email addresses to whom send job completion info."""
-    args = _h.VectorAttribute(_c.V_ARGV)
+    args = VectorAttribute(V_ARGV)
     """The job's command argument list."""
     # dict attributes
-    jobEnvironment = _h.DictAttribute(_c.V_ENV)
+    jobEnvironment = DictAttribute(V_ENV)
     """The job's environment dict."""
 
     _as_parameter_ = None
@@ -172,8 +178,8 @@ class JobTemplate(object):
 
         Attributes can be passed as keyword arguments.
         """
-        jt = _ct.pointer(_ct.POINTER(_w.drmaa_job_template_t)())
-        _h.c(_w.drmaa_allocate_job_template, jt)
+        jt = pointer(POINTER(drmaa_job_template_t)())
+        c(drmaa_allocate_job_template, jt)
         self._jt = self._as_parameter_ = jt.contents
         try:
             for aname in kwargs:
@@ -184,7 +190,7 @@ class JobTemplate(object):
 
     def delete(self):
         """Deallocate the underlying DRMAA job template."""
-        _h.c(_w.drmaa_delete_job_template, self)
+        c(drmaa_delete_job_template, self)
 
     def __enter__(self):
         """context manager enter routine"""
@@ -207,12 +213,12 @@ class Session(object):
 
     This class is the entry point for communicating with the DRM system
     """
-    TIMEOUT_WAIT_FOREVER = _c.TIMEOUT_WAIT_FOREVER
-    TIMEOUT_NO_WAIT = _c.TIMEOUT_NO_WAIT
-    JOB_IDS_SESSION_ANY = _c.JOB_IDS_SESSION_ANY
-    JOB_IDS_SESSION_ALL = _c.JOB_IDS_SESSION_ALL
+    TIMEOUT_WAIT_FOREVER = TIMEOUT_WAIT_FOREVER
+    TIMEOUT_NO_WAIT = TIMEOUT_NO_WAIT
+    JOB_IDS_SESSION_ANY = JOB_IDS_SESSION_ANY
+    JOB_IDS_SESSION_ALL = JOB_IDS_SESSION_ALL
 
-    contact = _h.SessionStringAttribute(_w.drmaa_get_contact)
+    contact = SessionStringAttribute(drmaa_get_contact)
     """
     a comma delimited string list containing the contact strings available
     from the default DRMAA implementation, one element per DRM system
@@ -221,15 +227,14 @@ class Session(object):
     attached. The returned strings are implementation dependent.
     """
 
-    drmsInfo = _h.SessionStringAttribute(_w.drmaa_get_DRM_system)
+    drmsInfo = SessionStringAttribute(drmaa_get_DRM_system)
     """
     If called before initialize(), this method returns a comma delimited
     list of DRM systems, one element per DRM system implementation
     provided. If called after initialize(), this method returns the
     selected DRM system. The returned String is implementation dependent.
     """
-    drmaaImplementation = _h.SessionStringAttribute(
-        _w.drmaa_get_DRMAA_implementation)
+    drmaaImplementation = SessionStringAttribute(drmaa_get_DRMAA_implementation)
     """
     If called before initialize(), this method returns a comma delimited
     list of DRMAA implementations, one element for each DRMAA
@@ -238,7 +243,7 @@ class Session(object):
     implementation dependent and may contain the DRM system as a
     component.
     """
-    version = _h.SessionVersionAttribute()
+    version = SessionVersionAttribute()
     """
     a Version object containing the major and minor version numbers of the
     DRMAA library. For DRMAA 1.0, major is 1 and minor is 0.
@@ -268,7 +273,7 @@ class Session(object):
         calls to initialize() by the same thread with throw a
         SessionAlreadyActiveException.
         """
-        _w.init(contactString)
+        py_drmaa_init(contactString)
 
     # no return value
     @staticmethod
@@ -282,7 +287,7 @@ class Session(object):
         threads. Additional calls to exit() beyond the first will throw a
         NoActiveSessionException.
         """
-        _w.exit()
+        py_drmaa_exit()
 
     # returns JobTemplate instance
     @staticmethod
@@ -324,8 +329,8 @@ class Session(object):
         The returned job identifier is a String identical to that returned
         from the underlying DRM system.
         """
-        jid = _ct.create_string_buffer(128)
-        _h.c(_w.drmaa_run_job, jid, _ct.sizeof(jid), jobTemplate)
+        jid = create_string_buffer(128)
+        c(drmaa_run_job, jid, sizeof(jid), jobTemplate)
         return jid.value
 
     # takes JobTemplate instance and num values, returns string list
@@ -351,7 +356,7 @@ class Session(object):
         This placeholder is used to represent the individual identifiers of
         the tasks submitted through this method.
         """
-        return list(_h.run_bulk_job(jobTemplate, beginIndex, endIndex, step))
+        return list(run_bulk_job(jobTemplate, beginIndex, endIndex, step))
 
     # takes string and JobControlAction value, no return value
     @staticmethod
@@ -390,7 +395,7 @@ class Session(object):
         jobs submitted by other DRMAA session in other DRMAA implementations
         or jobs submitted via native utilities.
         """
-        _h.c(_w.drmaa_control, jobId, _c.string_to_control_action(operation))
+        c(drmaa_control, jobId.decode(), string_to_control_action(operation))
 
     # takes string list, num value and boolean, no return value
     @staticmethod
@@ -433,7 +438,7 @@ class Session(object):
             d = 1
         else:
             d = 0
-        _h.c(_w.drmaa_synchronize, _h.string_vector(jobIds), timeout, d)
+        c(drmaa_synchronize, string_vector(jobIds), timeout, d)
 
     # takes string and long, returns JobInfo instance
     @staticmethod
@@ -445,8 +450,8 @@ class Session(object):
           `jobId` : str
             The job id to wait completion for.
 
-            If the special string, `Session.JOB_IDS_SESSION_ANY`, is provided as the
-            jobId, this routine will wait for any job from the session
+            If the special string, `Session.JOB_IDS_SESSION_ANY`, is provided
+            as the jobId, this routine will wait for any job from the session
           `timeout` : float
             The timeout value is used to specify the desired behavior when a
             result is not immediately available.
@@ -470,27 +475,27 @@ class Session(object):
         single job more than once is when the previous call to wait() timed
         out before the job finished.)
         """
-        stat = _ct.c_int()
-        jid_out = _ct.create_string_buffer(128)
-        rusage = _ct.pointer(_ct.POINTER(_w.drmaa_attr_values_t)())
-        _h.c(_w.drmaa_wait, jobId, jid_out, _ct.sizeof(jid_out),
-             _ct.byref(stat), timeout, rusage)
-        res_usage = _h.adapt_rusage(rusage)
-        exited = _ct.c_int()
-        _h.c(_w.drmaa_wifexited, _ct.byref(exited), stat)
-        aborted = _ct.c_int()
-        _h.c(_w.drmaa_wifaborted, _ct.byref(aborted), stat)
-        signaled = _ct.c_int()
-        _h.c(_w.drmaa_wifsignaled, _ct.byref(signaled), stat)
-        coredumped = _ct.c_int()
-        _h.c(_w.drmaa_wcoredump, _ct.byref(coredumped), stat)
-        exit_status = _ct.c_int()
-        _h.c(_w.drmaa_wexitstatus, _ct.byref(exit_status), stat)
-        term_signal = _ct.create_string_buffer(_c.SIGNAL_BUFFER)
-        _h.c(_w.drmaa_wtermsig, term_signal, _ct.sizeof(term_signal), stat)
+        stat = c_int()
+        jid_out = create_string_buffer(128)
+        rusage = pointer(POINTER(drmaa_attr_values_t)())
+        c(drmaa_wait, jobId.decode(), jid_out, sizeof(jid_out), byref(stat),
+          timeout, rusage)
+        res_usage = adapt_rusage(rusage)
+        exited = c_int()
+        c(drmaa_wifexited, byref(exited), stat)
+        aborted = c_int()
+        c(drmaa_wifaborted, byref(aborted), stat)
+        signaled = c_int()
+        c(drmaa_wifsignaled, byref(signaled), stat)
+        coredumped = c_int()
+        c(drmaa_wcoredump, byref(coredumped), stat)
+        exit_status = c_int()
+        c(drmaa_wexitstatus, byref(exit_status), stat)
+        term_signal = create_string_buffer(SIGNAL_BUFFER)
+        c(drmaa_wtermsig, term_signal, sizeof(term_signal), stat)
         return JobInfo(jid_out.value, bool(exited), bool(signaled),
-                       term_signal.value, bool(coredumped),
-                       bool(aborted), int(exit_status.value), res_usage)
+                       term_signal.value, bool(coredumped), bool(aborted),
+                       int(exit_status.value), res_usage)
 
     # takes string, returns JobState instance
     @staticmethod
@@ -505,7 +510,8 @@ class Session(object):
         * `JobState.QUEUED_ACTIVE`: job is queued and active,
         * `JobState.SYSTEM_ON_HOLD`: job is queued and in system hold,
         * `JobState.USER_ON_HOLD`: job is queued and in user hold,
-        * `JobState.USER_SYSTEM_ON_HOLD`: job is queued and in user and system hold,
+        * `JobState.USER_SYSTEM_ON_HOLD`: job is queued and in user and
+                                          system hold,
         * `JobState.RUNNING`: job is running,
         * `JobState.SYSTEM_SUSPENDED`: job is system suspended,
         * `JobState.USER_SUSPENDED`: job is user suspended,
@@ -517,9 +523,9 @@ class Session(object):
         FAILED or DONE and the status has been successfully cached. Terminated
         jobs return a FAILED status.
         """
-        status = _ct.c_int()
-        _h.c(_w.drmaa_job_ps, jobName, _ct.byref(status))
-        return _c.status_to_string(status.value)
+        status = c_int()
+        c(drmaa_job_ps, jobName.decode(), byref(status))
+        return status_to_string(status.value)
 
     def __enter__(self):
         """Context manager enter function"""

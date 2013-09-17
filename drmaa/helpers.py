@@ -24,14 +24,22 @@
 internal helpers
 """
 
-import ctypes as _ct
 import sys
+from ctypes import byref, c_uint, create_string_buffer, POINTER, pointer, sizeof
 
-import drmaa.const as const
-from drmaa.wrappers import *
+from drmaa.const import ATTR_BUFFER, NO_MORE_ELEMENTS
 from drmaa.errors import error_buffer
+from drmaa.wrappers import (drmaa_attr_names_t, drmaa_attr_values_t,
+                            drmaa_get_attribute, drmaa_get_attribute_names,
+                            drmaa_get_next_attr_name, drmaa_get_next_attr_value,
+                            drmaa_get_next_job_id, drmaa_get_vector_attribute,
+                            drmaa_get_vector_attribute_names, drmaa_job_ids_t,
+                            drmaa_release_attr_names, drmaa_release_attr_values,
+                            drmaa_release_job_ids, drmaa_run_bulk_jobs,
+                            drmaa_set_attribute, drmaa_set_vector_attribute,
+                            drmaa_version, STRING)
 
-_BUFLEN = const.ATTR_BUFFER
+_BUFLEN = ATTR_BUFFER
 
 try:
     from collections import namedtuple
@@ -78,8 +86,8 @@ class SessionStringAttribute(object):
         self._f = drmaa_function
 
     def __get__(self, *args):
-        buf = _ct.create_string_buffer(_BUFLEN)
-        c(self._f, buf, _ct.sizeof(buf))
+        buf = create_string_buffer(_BUFLEN)
+        c(self._f, buf, sizeof(buf))
         return buf.value
 
 Version = namedtuple("Version", "major minor")
@@ -91,9 +99,9 @@ class SessionVersionAttribute(object):
     """A Version attribute."""
 
     def __get__(self, *args):
-        major = _ct.c_uint(10)
-        minor = _ct.c_uint(10)
-        c(drmaa_version, _ct.byref(major), _ct.byref(minor))
+        major = c_uint(10)
+        minor = c_uint(10)
+        c(drmaa_version, byref(major), byref(minor))
         return Version(major.value, minor.value)
 
 
@@ -129,7 +137,7 @@ class Attribute(object):
         c(drmaa_set_attribute, instance, self.name, v)
 
     def __get__(self, instance, _):
-        attr_buffer = create_string_buffer(const.ATTR_BUFFER)
+        attr_buffer = create_string_buffer(ATTR_BUFFER)
         c(drmaa_get_attribute, instance, self.name, attr_buffer,
           sizeof(attr_buffer))
         if self.converter:
@@ -181,9 +189,9 @@ class DictAttribute(object):
 
 def attributes_iterator(attributes):
     try:
-        buf = create_string_buffer(const.ATTR_BUFFER)
+        buf = create_string_buffer(ATTR_BUFFER)
         while drmaa_get_next_attr_value(attributes, buf, sizeof(buf))\
-                != const.NO_MORE_ELEMENTS:
+                != NO_MORE_ELEMENTS:
             yield buf.value
     except:
         drmaa_release_attr_values(attributes)
@@ -215,7 +223,7 @@ def attribute_names_iterator():
     try:
         name = create_string_buffer(_BUFLEN)
         while drmaa_get_next_attr_name(attrn_p.contents, name,
-                                       _BUFLEN) != const.NO_MORE_ELEMENTS:
+                                       _BUFLEN) != NO_MORE_ELEMENTS:
             yield name.value
     except:
         drmaa_release_attr_names(attrn_p.contents)
@@ -230,7 +238,7 @@ def vector_attribute_names_iterator():
     try:
         name = create_string_buffer(_BUFLEN)
         while drmaa_get_next_attr_name(attrn_p.contents, name,
-                                       _BUFLEN) != const.NO_MORE_ELEMENTS:
+                                       _BUFLEN) != NO_MORE_ELEMENTS:
             yield name.value
     except:
         drmaa_release_attr_names(attrn_p.contents)
@@ -245,7 +253,7 @@ def run_bulk_job(jt, start, end, incr=1):
         c(drmaa_run_bulk_jobs, jids, jt, start, end, incr)
         jid = create_string_buffer(_BUFLEN)
         while drmaa_get_next_job_id(jids.contents, jid,
-                                    _BUFLEN) != const.NO_MORE_ELEMENTS:
+                                    _BUFLEN) != NO_MORE_ELEMENTS:
             yield jid.value
     except:
         drmaa_release_job_ids(jids.contents)
