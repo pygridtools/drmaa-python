@@ -59,7 +59,11 @@ class BoolConverter(object):
     """Helper class to convert to/from bool attributes."""
 
     def __init__(self, true=b'y', false=b'n'):
+        if isinstance(true, str):
+            true = true.encode()
         self.true = true
+        if isinstance(false, str):
+            true = true.encode()
         self.false = false
 
     def to_drmaa(self, value):
