@@ -24,6 +24,9 @@ if [ $LOCALHOST_IN_SEL != "1" ]; then sudo qconf -Ae host_template; else sudo qc
 sed -i -r "s/UNDEFINED/$CORES/" queue_template
 sudo qconf -Ap smp_template
 sudo qconf -Aq queue_template
+sudo /var/lib/gridengine/default/common/sgeexecd stop
+sleep 10
+sudo /var/lib/gridengine/default/common/sgeexecd start
 echo "Printing queue info to verify that things are working correctly."
 qstat -f -q all.q -explain a
 echo "You should see sge_execd and sge_qmaster running below:"
