@@ -30,7 +30,7 @@ from os import environ
 from nose.tools import eq_
 
 from drmaa import Session, JobTemplate
-from drmaa.const import (JobSubmissionState, PLACEHOLDER_HD,
+from drmaa.const import (JobControlAction, JobSubmissionState, PLACEHOLDER_HD,
                          SUBMISSION_STATE_ACTIVE)
 
 
