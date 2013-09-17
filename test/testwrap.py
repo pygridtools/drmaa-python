@@ -23,6 +23,7 @@ test module for the functional interface
 
 from __future__ import absolute_import, print_function, unicode_literals
 
+import sys
 import unittest
 from os import environ
 
