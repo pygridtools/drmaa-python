@@ -10,7 +10,7 @@ sudo apt-get update -qq
 echo "gridengine-master shared/gridenginemaster string localhost" | sudo debconf-set-selections
 echo "gridengine-master shared/gridenginecell string default" | sudo debconf-set-selections
 echo "gridengine-master shared/gridengineconfig boolean true" | sudo debconf-set-selections
-sudo apt-get install 'gridengine-*' libdrmaa1.0
+sudo apt-get install gridengine-common gridengine-master libdrmaa1.0 gridengine-client gridengine-exec
 echo "Waiting 10 seconds for grid engine to come up..."
 sleep 10  # Wait for the server to come up, just in case
 export CORES=$(grep -c '^processor' /proc/cpuinfo)
@@ -24,9 +24,6 @@ if [ $LOCALHOST_IN_SEL != "1" ]; then sudo qconf -Ae host_template; else sudo qc
 sed -i -r "s/UNDEFINED/$CORES/" queue_template
 sudo qconf -Ap smp_template
 sudo qconf -Aq queue_template
-sudo /var/lib/gridengine/default/common/sgeexecd stop
-sleep 10
-sudo /var/lib/gridengine/default/common/sgeexecd start
 echo "Printing queue info to verify that things are working correctly."
 qstat -f -q all.q -explain a
 echo "You should see sge_execd and sge_qmaster running below:"
