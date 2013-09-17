@@ -168,7 +168,9 @@ class DictAttribute(object):
         self.name = name
 
     def __set__(self, instance, value):
-        v = ["{0}={1}".format(k, v).encode() for (k, v) in value.items()]
+        v = ["{0}={1}".format(k, v) for (k, v) in value.items()]
+        if sys.version_info >= (3, 0):
+            v = [el.encode() if not isinstance(el, bytes) else el for el in v]
         c(drmaa_set_vector_attribute, instance, self.name, string_vector(v))
 
     def __get__(self, instance, _):
@@ -264,7 +266,7 @@ def string_vector(v):
     vlen = len(v)
     values = (STRING * (vlen + 1))()
     for i, el in enumerate(v):
-        values[i] = STRING(el.encode())
+        values[i] = STRING(el.encode() if not isinstance(el, bytes) else el)
     values[vlen] = STRING()
     return values
 
