@@ -264,7 +264,7 @@ def string_vector(v):
     vlen = len(v)
     values = (STRING * (vlen + 1))()
     for i, el in enumerate(v):
-        values[i] = STRING(el)
+        values[i] = STRING(el.encode())
     values[vlen] = STRING()
     return values
 
