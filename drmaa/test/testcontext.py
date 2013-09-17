@@ -1,13 +1,16 @@
-from __future__ import with_statement
+from __future__ import print_function, with_statement
+
 from drmaa import *
+
 
 def test_with_session():
     """'with' statement works with Session"""
     with Session() as s:
-        print s.version
-        print s.contact
-        print s.drmsInfo
-        print s.drmaaImplementation
+        print(s.version)
+        print(s.contact)
+        print(s.drmsInfo)
+        print(s.drmaaImplementation)
+
 
 def test_with_jt():
     """'with' statement works with JobTemplate"""
@@ -17,6 +20,5 @@ def test_with_jt():
         jt.remoteCommand = 'sleep'
         jt.args = ['10']
         jid = s.runJob(jt)
-        print s.wait(jid)
+        print(s.wait(jid))
     s.exit()
-
