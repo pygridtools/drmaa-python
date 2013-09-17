@@ -98,8 +98,10 @@ class SessionStringAttribute(object):
         return buf.value.decode()
 
 Version = namedtuple("Version", "major minor")
-Version.__str__ = lambda x: "{0}.{1}".format(x.major, x.minor).encode()
-
+if sys.version_info < (3, 0):
+    Version.__str__ = lambda x: "{0}.{1}".format(x.major, x.minor).encode()
+else:
+    Version.__str__ = lambda x: "{0}.{1}".format(x.major, x.minor)
 
 class SessionVersionAttribute(object):
 
