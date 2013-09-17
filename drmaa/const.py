@@ -19,10 +19,11 @@
 #
 #  Author: Enrico Sirola <enrico.sirola@statpro.com>
 #
-
 """
 drmaa constants
 """
+
+from __future__ import absolute_import, print_function, unicode_literals
 
 # drmaa_get_attribute()
 ATTR_BUFFER = 1024
@@ -49,8 +50,8 @@ TIMEOUT_NO_WAIT = 0
 JOB_IDS_SESSION_ANY = b"DRMAA_JOB_IDS_SESSION_ANY"
 JOB_IDS_SESSION_ALL = b"DRMAA_JOB_IDS_SESSION_ALL"
 
-SUBMISSION_STATE_ACTIVE = b"drmaa_active"
-SUBMISSION_STATE_HOLD = b"drmaa_hold"
+SUBMISSION_STATE_ACTIVE = "drmaa_active"
+SUBMISSION_STATE_HOLD = "drmaa_hold"
 
 # Agreed placeholder names
 PLACEHOLDER_INCR = b"$drmaa_incr_ph$"
@@ -90,27 +91,27 @@ def job_state(code):
 
 
 class JobState(object):
-    UNDETERMINED = b'undetermined'
-    QUEUED_ACTIVE = b'queued_active'
-    SYSTEM_ON_HOLD = b'system_on_hold'
-    USER_ON_HOLD = b'user_on_hold'
-    USER_SYSTEM_ON_HOLD = b'user_system_on_hold'
-    RUNNING = b'running'
-    SYSTEM_SUSPENDED = b'system_suspended'
-    USER_SUSPENDED = b'user_suspended'
-    USER_SYSTEM_SUSPENDED = b'user_system_suspended'
-    DONE = b'done'
-    FAILED = b'failed'
+    UNDETERMINED = 'undetermined'
+    QUEUED_ACTIVE = 'queued_active'
+    SYSTEM_ON_HOLD = 'system_on_hold'
+    USER_ON_HOLD = 'user_on_hold'
+    USER_SYSTEM_ON_HOLD = 'user_system_on_hold'
+    RUNNING = 'running'
+    SYSTEM_SUSPENDED = 'system_suspended'
+    USER_SUSPENDED = 'user_suspended'
+    USER_SYSTEM_SUSPENDED = 'user_system_suspended'
+    DONE = 'done'
+    FAILED = 'failed'
 
 # Job control action
 
 
 class JobControlAction(object):
-    SUSPEND = b'suspend'
-    RESUME = b'resume'
-    HOLD = b'hold'
-    RELEASE = b'release'
-    TERMINATE = b'terminate'
+    SUSPEND = 'suspend'
+    RESUME = 'resume'
+    HOLD = 'hold'
+    RELEASE = 'release'
+    TERMINATE = 'terminate'
 
 _JOB_CONTROL = [JobControlAction.SUSPEND,
                 JobControlAction.RESUME,

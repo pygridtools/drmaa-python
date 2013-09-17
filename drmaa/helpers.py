@@ -24,27 +24,34 @@
 internal helpers
 """
 
+from __future__ import absolute_import, print_function, unicode_literals
+
 import sys
-from ctypes import byref, c_uint, create_string_buffer, POINTER, pointer, sizeof
+from collections import namedtuple
+from ctypes import (byref, c_uint, create_string_buffer, POINTER, pointer,
+                    sizeof)
 
 from drmaa.const import ATTR_BUFFER, NO_MORE_ELEMENTS
 from drmaa.errors import error_buffer
 from drmaa.wrappers import (drmaa_attr_names_t, drmaa_attr_values_t,
                             drmaa_get_attribute, drmaa_get_attribute_names,
-                            drmaa_get_next_attr_name, drmaa_get_next_attr_value,
+                            drmaa_get_next_attr_name,
+                            drmaa_get_next_attr_value,
                             drmaa_get_next_job_id, drmaa_get_vector_attribute,
                             drmaa_get_vector_attribute_names, drmaa_job_ids_t,
-                            drmaa_release_attr_names, drmaa_release_attr_values,
+                            drmaa_release_attr_names,
+                            drmaa_release_attr_values,
                             drmaa_release_job_ids, drmaa_run_bulk_jobs,
                             drmaa_set_attribute, drmaa_set_vector_attribute,
                             drmaa_version, STRING)
 
-_BUFLEN = ATTR_BUFFER
+# Python 3 compatability help
+if sys.version_info < (3, 0):
+    bytes = str
+    str = unicode
 
-try:
-    from collections import namedtuple
-except ImportError:  # pre 2.6 behaviour
-    from drmaa.nt import namedtuple
+
+_BUFLEN = ATTR_BUFFER
 
 
 class BoolConverter(object):
@@ -70,10 +77,10 @@ class BoolConverter(object):
 
 class IntConverter(object):
 
-    """Helper class to convert to/from float attributes."""
+    """Helper class to convert to/from int attributes."""
     @staticmethod
     def to_drmaa(value):
-        return str(value)
+        return bytes(value)
 
     @staticmethod
     def from_drmaa(value):
@@ -88,7 +95,7 @@ class SessionStringAttribute(object):
     def __get__(self, *args):
         buf = create_string_buffer(_BUFLEN)
         c(self._f, buf, sizeof(buf))
-        return buf.value
+        return buf.value.decode()
 
 Version = namedtuple("Version", "major minor")
 Version.__str__ = lambda x: "{0}.{1}".format(x.major, x.minor).encode()
@@ -124,13 +131,15 @@ class Attribute(object):
            a converter to translate attribute values to/from the underlying
            implementation. See BoolConverter for an example.
         """
+        if isinstance(name, str):
+            name = name.encode()
         self.name = name
         self.converter = type_converter
 
     def __set__(self, instance, value):
         if self.converter:
             v = self.converter.to_drmaa(value)
-        elif sys.version_info >= (3, 0) and isinstance(value, str):
+        elif isinstance(value, str):
             v = value.encode()
         else:
             v = value
@@ -142,6 +151,8 @@ class Attribute(object):
           sizeof(attr_buffer))
         if self.converter:
             return self.converter.from_drmaa(attr_buffer.value)
+        elif isinstance(attr_buffer.value, bytes):
+            return attr_buffer.value.decode()
         else:
             return attr_buffer.value
 
@@ -155,10 +166,13 @@ class VectorAttribute(object):
     """
 
     def __init__(self, name):
+        if isinstance(name, str):
+            name = name.encode()
         self.name = name
 
     def __set__(self, instance, value):
-        c(drmaa_set_vector_attribute, instance, self.name, string_vector(value))
+        c(drmaa_set_vector_attribute, instance,
+          self.name, string_vector(value))
 
     def __get__(self, instance, _):
         return list(vector_attribute_iterator(instance, self.name))
@@ -173,16 +187,18 @@ class DictAttribute(object):
     """
 
     def __init__(self, name):
+        if isinstance(name, str):
+            name = name.encode()
         self.name = name
 
     def __set__(self, instance, value):
         v = ["{0}={1}".format(k, v) for (k, v) in value.items()]
-        if sys.version_info >= (3, 0):
-            v = [el.encode() if not isinstance(el, bytes) else el for el in v]
-        c(drmaa_set_vector_attribute, instance, self.name, string_vector(v))
+        v = [el.encode() if not isinstance(el, bytes) else el for el in v]
+        c(drmaa_set_vector_attribute, instance, self.name,
+          string_vector(v))
 
     def __get__(self, instance, _):
-        x = [i.split(b'=', 1) for i in
+        x = [i.split('=', 1) for i in
              list(vector_attribute_iterator(instance, self.name))]
         return dict(x)
 
@@ -190,9 +206,9 @@ class DictAttribute(object):
 def attributes_iterator(attributes):
     try:
         buf = create_string_buffer(ATTR_BUFFER)
-        while drmaa_get_next_attr_value(attributes, buf, sizeof(buf))\
-                != NO_MORE_ELEMENTS:
-            yield buf.value
+        while drmaa_get_next_attr_value(attributes, buf,
+                                        sizeof(buf)) != NO_MORE_ELEMENTS:
+            yield buf.value.decode()
     except:
         drmaa_release_attr_values(attributes)
         raise
@@ -206,7 +222,7 @@ def adapt_rusage(rusage):
     """
     rv = dict()
     for attr in attributes_iterator(rusage.contents):
-        k, v = attr.split(b'=')
+        k, v = attr.split('=')
         rv[k] = v
     return rv
 
@@ -224,7 +240,7 @@ def attribute_names_iterator():
         name = create_string_buffer(_BUFLEN)
         while drmaa_get_next_attr_name(attrn_p.contents, name,
                                        _BUFLEN) != NO_MORE_ELEMENTS:
-            yield name.value
+            yield name.value.decode()
     except:
         drmaa_release_attr_names(attrn_p.contents)
         raise
@@ -239,7 +255,7 @@ def vector_attribute_names_iterator():
         name = create_string_buffer(_BUFLEN)
         while drmaa_get_next_attr_name(attrn_p.contents, name,
                                        _BUFLEN) != NO_MORE_ELEMENTS:
-            yield name.value
+            yield name.value.decode()
     except:
         drmaa_release_attr_names(attrn_p.contents)
         raise
@@ -254,7 +270,7 @@ def run_bulk_job(jt, start, end, incr=1):
         jid = create_string_buffer(_BUFLEN)
         while drmaa_get_next_job_id(jids.contents, jid,
                                     _BUFLEN) != NO_MORE_ELEMENTS:
-            yield jid.value
+            yield jid.value.decode()
     except:
         drmaa_release_job_ids(jids.contents)
         raise
@@ -297,8 +313,8 @@ def attribute_getter(obj, attribute_name):
     def f():
         "getter for %s" % attribute_name
         attr_buffer = create_string_buffer(1024)
-        c(drmaa_get_attribute, obj, attribute_name,
-          attr_buffer, sizeof(attr_buffer))
+        c(drmaa_get_attribute, obj, attribute_name, attr_buffer,
+          sizeof(attr_buffer))
         return attr_buffer.value
     f.__name__ = 'get_' + attribute_name
     return f

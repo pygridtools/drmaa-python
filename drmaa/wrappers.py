@@ -21,6 +21,8 @@
 
 """DRMAA C library function wrappers"""
 
+from __future__ import absolute_import, print_function, unicode_literals
+
 import os
 from ctypes import (c_char_p, c_int, c_long, c_size_t, c_uint, c_ulong, CDLL,
                     POINTER, RTLD_GLOBAL, sizeof, Structure)
@@ -38,11 +40,9 @@ else:
     libpath = find_library('drmaa')
 
 if libpath is None:
-    errmsg = ' '.join(('could not find drmaa library.',
-                       'Please specify its full',
-                       'path using the environment variable',
-                       _drmaa_lib_env_name))
-    raise RuntimeError(errmsg)
+    raise RuntimeError(('Could not find drmaa library.  Please specify its ' +
+                        'full path using the environment variable ' +
+                        '{0}').format(_drmaa_lib_env_name))
 
 _lib = CDLL(libpath, mode=RTLD_GLOBAL)
 
@@ -59,6 +59,8 @@ drmaa_exit.argtypes = [STRING, size_t]
 
 
 def py_drmaa_init(contact=None):
+    if not isinstance(contact, bytes):
+        contact = contact.encode()
     return _lib.drmaa_init(contact, error_buffer, sizeof(error_buffer))
 
 _lib.drmaa_exit.argtypes = [c_char_p, c_size_t]
@@ -108,12 +110,12 @@ drmaa_get_DRMAA_implementation.argtypes = [STRING, size_t, STRING, size_t]
 
 drmaa_allocate_job_template = _lib.drmaa_allocate_job_template
 drmaa_allocate_job_template.restype = error_check
-drmaa_allocate_job_template.argtypes = [
-    POINTER(POINTER(drmaa_job_template_t)), STRING, size_t]
+drmaa_allocate_job_template.argtypes = [POINTER(POINTER(drmaa_job_template_t)),
+                                        STRING, size_t]
 drmaa_delete_job_template = _lib.drmaa_delete_job_template
 drmaa_delete_job_template.restype = error_check
-drmaa_delete_job_template.argtypes = [
-    POINTER(drmaa_job_template_t), STRING, size_t]
+drmaa_delete_job_template.argtypes = [POINTER(drmaa_job_template_t), STRING,
+                                      size_t]
 drmaa_set_attribute = _lib.drmaa_set_attribute
 drmaa_set_attribute.restype = error_check
 drmaa_set_attribute.argtypes = [POINTER(drmaa_job_template_t), STRING,
@@ -125,12 +127,12 @@ drmaa_get_attribute.argtypes = [POINTER(drmaa_job_template_t), STRING,
 
 drmaa_get_next_attr_name = _lib.drmaa_get_next_attr_name
 drmaa_get_next_attr_name.restype = c_int
-drmaa_get_next_attr_name.argtypes = [
-    POINTER(drmaa_attr_names_t), STRING, size_t]
+drmaa_get_next_attr_name.argtypes = [POINTER(drmaa_attr_names_t), STRING,
+                                     size_t]
 drmaa_get_next_attr_value = _lib.drmaa_get_next_attr_value
 drmaa_get_next_attr_value.restype = c_int
-drmaa_get_next_attr_value.argtypes = [
-    POINTER(drmaa_attr_values_t), STRING, size_t]
+drmaa_get_next_attr_value.argtypes = [POINTER(drmaa_attr_values_t), STRING,
+                                      size_t]
 drmaa_get_next_job_id = _lib.drmaa_get_next_job_id
 drmaa_get_next_job_id.restype = error_check
 drmaa_get_next_job_id.argtypes = [POINTER(drmaa_job_ids_t), STRING, size_t]
