@@ -1,5 +1,4 @@
 include license.txt
 include *.rst
-recursive-include doc *
 recursive-include examples *
 recursive-include test *
