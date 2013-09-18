@@ -13,14 +13,11 @@ echo "gridengine-master shared/gridengineconfig boolean true" | sudo debconf-set
 sudo apt-get install gridengine-common gridengine-master
 # Do this in a separate step to give master time to start
 sudo apt-get install libdrmaa1.0 gridengine-client gridengine-exec
-echo "Waiting 10 seconds for grid engine to come up..."
-sleep 10  # Wait for the server to come up, just in case
 export CORES=$(grep -c '^processor' /proc/cpuinfo)
 sed -i -r "s/template/$USER/" user_template
 sudo qconf -Auser user_template
 sudo qconf -au $USER arusers
 sudo qconf -as localhost
-sleep 5
 export LOCALHOST_IN_SEL=$(qconf -sel | grep -c 'localhost')
 if [ $LOCALHOST_IN_SEL != "1" ]; then sudo qconf -Ae host_template; else sudo qconf -Me host_template; fi
 sed -i -r "s/UNDEFINED/$CORES/" queue_template
