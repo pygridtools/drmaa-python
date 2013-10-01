@@ -146,12 +146,11 @@ def error_check(code):
     if code == 0:
         return
     else:
+        error_string = "code {0}: {1}".format(code, error_buffer.value.decode())
         try:
-            raise _ERRORS[code - 1]("code {0}: {1}".format(code,
-                                                           error_buffer.value))
+            raise _ERRORS[code - 1](error_string)
         except IndexError:
-            raise DrmaaException("code {0}: {1}".format(code,
-                                                        error_buffer.value))
+            raise DrmaaException(error_string)
 
 # da vedere: NO_RUSAGE, NO_MORE_ELEMENTS
 _ERRORS = [InternalException,
