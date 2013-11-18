@@ -61,7 +61,7 @@ from .session import JobInfo, JobTemplate, Session
 
 
 __docformat__ = "restructuredtext en"
-__version__ = "0.7"
+__version__ = "0.7.1"
 
 
 __all__ = ['JobInfo', 'JobTemplate', 'Session', 'AlreadyActiveSessionException',
