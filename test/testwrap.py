@@ -17,26 +17,44 @@
 #  PURPOSE. See the license for more details.
 # -----------------------------------------------------------
 
-"""test module for the functional interface"""
+"""
+test module for the functional interface
+"""
 
+from __future__ import absolute_import, print_function, unicode_literals
+
+import sys
 import unittest
-from nose.tools import assert_equal
-from drmaa import *
-from drmaa import const as c
 from os import environ
+
+from nose.tools import eq_
+
+from drmaa import Session, JobTemplate
+from drmaa.const import (JobControlAction, JobSubmissionState, PLACEHOLDER_HD,
+                         SUBMISSION_STATE_ACTIVE)
+
+
+# Python 3 compatability help
+if sys.version_info < (3, 0):
+    bytes = str
+    str = unicode
+
 
 def setup():
     "initialize DRMAA library"
     Session.initialize()
 
+
 def teardown():
     "finalize DRMAA session"
     Session.exit()
+
 
 def test_allocate():
     "job template allocation"
     jt = Session.createJobTemplate()
     Session.deleteJobTemplate(jt)
+
 
 class SubmitBase(unittest.TestCase):
 
@@ -51,21 +69,21 @@ class SubmitBase(unittest.TestCase):
     def tearDown(self):
         Session.deleteJobTemplate(self.jt)
 
+
 class EnvironmentTest(SubmitBase):
 
     def jt_tweaks(self):
         environ['PIPPO'] = 'aaaa'
-        self.jt.args = (
-            ["-c",
-             "from os import environ as env; assert ('PIPPO' in env) and (env['PIPPO'] == 'aaaa')"])
+        self.jt.args = (["-c",
+                         ("from os import environ as env; assert ('PIPPO' in " +
+                          "env) and (env['PIPPO'] == 'aaaa')")])
         self.jt.jobEnvironment = environ
 
     def test_environment(self):
         """environment variables are correctly passed to submitted jobs"""
         jinfo = Session.wait(self.jid)
-        assert jinfo.jobId == self.jid
+        eq_(jinfo.jobId, self.jid)
         assert hasattr(jinfo, 'hasExited')
-        #print jinfo.exitStatus
         assert hasattr(jinfo, 'exitStatus') and jinfo.exitStatus == 0
 
 
@@ -78,7 +96,7 @@ class Submit(SubmitBase):
     def test_wait(self):
         """waiting for job completion"""
         jinfo = Session.wait(self.jid)
-        assert jinfo.jobId == self.jid
+        eq_(jinfo.jobId, self.jid)
         assert hasattr(jinfo, 'hasExited')
         assert hasattr(jinfo, 'hasExited') and type(jinfo.hasExited) is bool
         assert hasattr(jinfo, 'hasSignal') and type(jinfo.hasSignal) is bool
@@ -100,52 +118,46 @@ class Submit(SubmitBase):
                             False)
         try:
             Session.wait(self.jid, Session.TIMEOUT_WAIT_FOREVER)
-        except Exception, e:
-            assert e.args[0].startswith('code 24') # no rusage
+        except Exception as e:
+            assert e.args[0].startswith('code 24')  # no rusage
+
 
 class JobTemplateTests(unittest.TestCase):
+
     def setUp(self):
         self.jt = Session.createJobTemplate()
 
     def test_scalar_attributes(self):
         """scalar attributes work"""
         for name, value in [("remoteCommand", 'cat'),
-                            ("jobSubmissionState", c.SUBMISSION_STATE_ACTIVE),
+                            ("jobSubmissionState", SUBMISSION_STATE_ACTIVE),
                             ("workingDirectory", JobTemplate.HOME_DIRECTORY),
-                            #("jobCategory", '/tmp'),
                             ("nativeSpecification", '-shell yes'),
                             ("blockEmail", False),
-                            #("startTime", '00:01'),
                             ("jobName", 'pippo'),
-                            ("inputPath", ":%s" % c.PLACEHOLDER_HD),
-                            ("outputPath", ":%s/pippo.out" % c.PLACEHOLDER_HD),
-                            ("errorPath", ":%s/pippo.out" % c.PLACEHOLDER_HD),
-                            ("joinFiles", True),]:
-                            #("transferFiles"           ,'i')
-                            #("deadlineTime"            ,'10'),
-                            #("hardWallclockTimeLimit"  ,'10:00'),
-                            #("softWallclockTimeLimit"  ,'00:00:10'),]:
-                            #("hardRunDurationLimit"    ,'00:01:00'),
-                            #("softRunDurationLimit"    ,'00:01:00')]:
+                            ("inputPath", ":%s" % PLACEHOLDER_HD),
+                            ("outputPath", ":%s/pippo.out" % PLACEHOLDER_HD),
+                            ("errorPath", ":%s/pippo.out" % PLACEHOLDER_HD),
+                            ("joinFiles", True)]:
             setattr(self.jt, name, value)
-            assert getattr(self.jt, name) == value
+            eq_(getattr(self.jt, name), value)
 
     # skipping this. the parameters above have to be tweaked a bit
     def xtest_tmp(self):
         self.test_scalar_attributes()
-        self.jt.args=['.colordb']
-        jid=Session.runJob(self.jt)
+        self.jt.args = ['.colordb']
+        jid = Session.runJob(self.jt)
         jinfo = Session.wait(jid)
-        print jinfo
+        print(jinfo)
 
     def test_vector_attributes(self):
         """vector attributes work"""
         args = ['10', 'de', 'arglebargle']
         self.jt.args = args
-        assert self.jt.args == args
+        eq_(self.jt.args, args)
         em = ['baz@quz.edu', 'foo@bar.com']
         self.jt.email = em
-        assert self.jt.email == em
+        eq_(self.jt.email, em)
 
     def test_dict_attribute(self):
         """dict attributes work"""
@@ -154,8 +166,8 @@ class JobTemplateTests(unittest.TestCase):
         for x in environ:
             # attribute values could be truncated. For some reason,
             # GE returns the first 1014 chars available (!)
-            assert_equal(environ[x][:ATTR_BUFFER-10],
-                         self.jt.jobEnvironment[x][:ATTR_BUFFER-10])
+            eq_(environ[x][:ATTR_BUFFER - 10],
+                self.jt.jobEnvironment[x][:ATTR_BUFFER - 10])
 
     def test_attribute_names(self):
         """attribute names work"""
@@ -164,23 +176,23 @@ class JobTemplateTests(unittest.TestCase):
     def test_block_email(self):
         """blockEmail works"""
         self.jt.blockEmail = True
-        assert self.jt.blockEmail == True
+        assert self.jt.blockEmail
         self.jt.blockEmail = False
-        assert self.jt.blockEmail == False
+        assert not self.jt.blockEmail
 
     def test_join_files(self):
         """joinFiles works"""
         self.jt.joinFiles = True
-        assert self.jt.joinFiles == True
+        assert self.jt.joinFiles
         self.jt.joinFiles = False
-        assert self.jt.joinFiles == False
+        assert not self.jt.joinFiles
 
     def test_submission_state(self):
         """submission state attributes work"""
         self.jt.jobSubmissionState = JobSubmissionState.HOLD_STATE
-        assert self.jt.jobSubmissionState == JobSubmissionState.HOLD_STATE
+        eq_(self.jt.jobSubmissionState, JobSubmissionState.HOLD_STATE)
         self.jt.jobSubmissionState = JobSubmissionState.ACTIVE_STATE
-        assert self.jt.jobSubmissionState == JobSubmissionState.ACTIVE_STATE
+        eq_(self.jt.jobSubmissionState, JobSubmissionState.ACTIVE_STATE)
 
     def tearDown(self):
         Session.deleteJobTemplate(self.jt)

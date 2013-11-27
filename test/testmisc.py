@@ -1,5 +1,13 @@
+'''
+Test miscenallenous helper functions.
+'''
+
+from __future__ import absolute_import, print_function, unicode_literals
+
 from unittest import TestCase
-from drmaa import *
+
+from drmaa import Session
+
 
 class Misc(TestCase):
 
@@ -8,16 +16,16 @@ class Misc(TestCase):
 
     def test_drmaa_get_contact(self):
         """contact attribute works"""
-        print self.s.contact
+        print(self.s.contact)
 
     def test_drmaa_version(self):
         """version attribute works"""
-        print self.s.version
+        print(self.s.version)
 
     def test_drmaa_get_DRM_system(self):
         """DRM system attribute works"""
-        print self.s.drmsInfo
+        print(self.s.drmsInfo)
 
     def test_drmaa_get_DRMAA_implementation(self):
         """DRMAA implementation attribute works"""
-        print self.s.drmaaImplementation
+        print(self.s.drmaaImplementation)
