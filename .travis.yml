@@ -2,12 +2,14 @@ language: python
 python:
   - 2.6
   - 2.7
-  - 3.2
+  - 3.3
 
 notifications:
   email: false
 
 # Install stuff
+virtualenv:
+  system_site_packages: true
 before_install:
   - travis/install_sge.sh
   - export GRID_MAP_REDIS_PORT=12345
@@ -15,9 +17,15 @@ before_install:
   - export SGE_CELL=default
   - export DRMAA_LIBRARY_PATH=/usr/lib/libdrmaa.so.1.0
 install:
+  - pip install python-coveralls --use-mirrors
+  - pip install nose-cov --use-mirrors
   - python setup.py install
 
 # Run test
 script:
-  - nosetests -d -v
+  - nosetests -d -v --with-cov --cov drmaa --cov-config .coveragerc --logging-level=DEBUG
+
+# Calculate coverage
+after_success:
+  - coveralls --config_file .coveragerc
 
