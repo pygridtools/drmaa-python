@@ -58,10 +58,10 @@ from .errors import (AlreadyActiveSessionException, AuthorizationException,
                      UnsupportedAttributeException, InvalidArgumentException,
                      InvalidAttributeValueException, OutOfMemoryException)
 from .session import JobInfo, JobTemplate, Session
+from .version import __version__, VERSION
 
 
 __docformat__ = "restructuredtext en"
-__version__ = "0.7"
 
 
 __all__ = ['JobInfo', 'JobTemplate', 'Session', 'AlreadyActiveSessionException',
