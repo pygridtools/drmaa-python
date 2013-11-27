@@ -23,6 +23,9 @@ A python package for DRM job submission and control.
 This package is an implementation of the DRMAA 1.0 Python language
 binding specification (http://www.ogf.org/documents/GFD.143.pdf).  See
 http://drmaa-python.googlecode.com for package info and download.
+
+:author: Enrico Sirola (enrico.sirola@statpro.com)
+:author: Dan Blanchard (dblanchard@ets.org)
 """
 
 from __future__ import absolute_import, print_function, unicode_literals

@@ -51,5 +51,3 @@ setup(name="drmaa",
                    "Programming Language :: Python :: 3",
                    "Topic :: Software Development :: Libraries",
                    "Topic :: System :: Distributed Computing"])
-
-
