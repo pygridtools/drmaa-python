@@ -2,3 +2,4 @@ include license.txt
 include *.rst
 recursive-include examples *
 recursive-include test *
+recursive-include docs *
