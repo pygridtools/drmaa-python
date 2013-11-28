@@ -9,12 +9,12 @@ DRMAA Python
   :target: https://coveralls.io/r/drmaa-python/drmaa-python
   :alt: Test coverage
 
-.. image:: https://pypip.in/d/drmaa-python/badge.png
-   :target: https://crate.io/packages/drmaa-python
+.. image:: https://pypip.in/d/drmaa/badge.png
+   :target: https://crate.io/packages/drmaa
    :alt: PyPI downloads
 
-.. image:: https://pypip.in/v/drmaa-python/badge.png
-   :target: https://crate.io/packages/drmaa-python
+.. image:: https://pypip.in/v/drmaa/badge.png
+   :target: https://crate.io/packages/drmaa
    :alt: Latest version on PyPI
 
 `Distributed Resource Management Application API <http://en.wikipedia.org/wiki/DRMAA>`__
