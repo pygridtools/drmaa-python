@@ -1,4 +1,11 @@
-*.py[cod]
+# Compiled python
+*.pyc
+*.pyo
+__pycache__
+
+
+.DS_Store
+.coverage
 
 # C extensions
 *.so
