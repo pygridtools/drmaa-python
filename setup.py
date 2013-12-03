@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # -----------------------------------------------------------
 #  Copyright (C) 2009 StatPro Italia s.r.l.
 #
@@ -29,6 +27,10 @@ package_data = dict([ (x, ['test/*.py']) for x in packages])
 exec(compile(open('drmaa/version.py').read(), 'drmaa/version.py', 'exec'))
 # (we use the above instead of execfile for Python 3.x compatibility)
 
+def readme():
+    with open('README.rst') as f:
+        return f.read()
+
 setup(name="drmaa",
       version=__version__,
       packages=packages,
@@ -36,6 +38,7 @@ setup(name="drmaa",
       author="Dan Blanchard",
       author_email="dblanchard@ets.org",
       description="a python DRMAA library",
+      long_description=readme(),
       license="BSD",
       keywords="python grid hpc drmaa",
       url="https://github.com/drmaa-python/drmaa-python",
