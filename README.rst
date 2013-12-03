@@ -17,6 +17,10 @@ DRMAA Python
    :target: https://crate.io/packages/drmaa
    :alt: Latest version on PyPI
 
+.. image:: https://d2weczhvl823v0.cloudfront.net/drmaa-python/drmaa-python/trend.png
+   :alt: Bitdeli badge
+   :target: https://bitdeli.com/free
+
 `Distributed Resource Management Application API <http://en.wikipedia.org/wiki/DRMAA>`__
 (DRMAA) bindings for Python. For more information
 `read the docs <http://drmaa-python.readthedocs.org>`__.
@@ -59,9 +63,3 @@ Changelog
       in ``__init__.py`` before, and ``__init__`` just imports things and sets
       ``__all__`` and ``__version__``, as is typically recommended now.
    -  Drops support for Python 2.5.
-
-
-.. image:: https://d2weczhvl823v0.cloudfront.net/drmaa-python/drmaa-python/trend.png
-   :alt: Bitdeli badge
-   :target: https://bitdeli.com/free
-
