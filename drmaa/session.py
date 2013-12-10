@@ -55,12 +55,6 @@ JobInfo = namedtuple("JobInfo",
                         wasAborted exitStatus resourceUsage""")
 
 
-# Python 3 compatability help
-if sys.version_info < (3, 0):
-    bytes = str
-    str = unicode
-
-
 class JobTemplate(object):
 
     """A job to be submitted to the DRM."""
@@ -374,7 +368,7 @@ class Session(object):
         jobs submitted by other DRMAA session in other DRMAA implementations
         or jobs submitted via native utilities.
         """
-        if isinstance(jobId, str):
+        if not isinstance(jobId, bytes):
             jobId = jobId.encode()        
         c(drmaa_control, jobId, string_to_control_action(operation))
 
@@ -459,7 +453,7 @@ class Session(object):
         stat = c_int()
         jid_out = create_string_buffer(128)
         rusage = pointer(POINTER(drmaa_attr_values_t)())
-        if isinstance(jobId, str):
+        if not isinstance(jobId, bytes):
             jobId = jobId.encode()                
         c(drmaa_wait, jobId, jid_out, sizeof(jid_out), byref(stat), timeout, 
           rusage)
@@ -507,7 +501,7 @@ class Session(object):
         jobs return a FAILED status.
         """
         status = c_int()
-        if isinstance(jobId, str):
+        if not isinstance(jobId, bytes):
             jobId = jobId.encode()        
         c(drmaa_job_ps, jobId, byref(status))
         return status_to_string(status.value)

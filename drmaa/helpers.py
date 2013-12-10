@@ -45,11 +45,6 @@ from drmaa.wrappers import (drmaa_attr_names_t, drmaa_attr_values_t,
                             drmaa_set_attribute, drmaa_set_vector_attribute,
                             drmaa_version, STRING)
 
-# Python 3 compatability help
-if sys.version_info < (3, 0):
-    bytes = str
-    str = unicode
-
 
 _BUFLEN = ATTR_BUFFER
 
@@ -59,10 +54,10 @@ class BoolConverter(object):
     """Helper class to convert to/from bool attributes."""
 
     def __init__(self, true=b'y', false=b'n'):
-        if isinstance(true, str):
+        if not isinstance(true, bytes):
             true = true.encode()
         self.true = true
-        if isinstance(false, str):
+        if not isinstance(false, bytes):
             false = false.encode()
         self.false = false
 
@@ -137,7 +132,7 @@ class Attribute(object):
            a converter to translate attribute values to/from the underlying
            implementation. See BoolConverter for an example.
         """
-        if isinstance(name, str):
+        if not isinstance(name, bytes):
             name = name.encode()
         self.name = name
         self.converter = type_converter
@@ -145,7 +140,7 @@ class Attribute(object):
     def __set__(self, instance, value):
         if self.converter:
             v = self.converter.to_drmaa(value)
-        elif isinstance(value, str):
+        elif not isinstance(value, bytes):
             v = value.encode()
         else:
             v = value
@@ -172,7 +167,7 @@ class VectorAttribute(object):
     """
 
     def __init__(self, name):
-        if isinstance(name, str):
+        if not isinstance(name, bytes):
             name = name.encode()
         self.name = name
 
@@ -193,7 +188,7 @@ class DictAttribute(object):
     """
 
     def __init__(self, name):
-        if isinstance(name, str):
+        if not isinstance(name, bytes):
             name = name.encode()
         self.name = name
 
