@@ -39,6 +39,11 @@ License
 Changelog
 ~~~~~~~~~
 
+-  v0.7.2
+   
+   -  Fix a couple inconsistencies with ``str`` vs ``bytes`` in Python 3 in 
+      ``drmaa.session``.
+
 -  v0.7.1
 
    -  Add `Read The Docs documentation <http://drmaa-python.readthedocs.org>`__

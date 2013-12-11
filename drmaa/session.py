@@ -368,7 +368,9 @@ class Session(object):
         jobs submitted by other DRMAA session in other DRMAA implementations
         or jobs submitted via native utilities.
         """
-        c(drmaa_control, jobId.encode(), string_to_control_action(operation))
+        if not isinstance(jobId, bytes):
+            jobId = jobId.encode()        
+        c(drmaa_control, jobId, string_to_control_action(operation))
 
     # takes string list, num value and boolean, no return value
     @staticmethod
@@ -451,8 +453,10 @@ class Session(object):
         stat = c_int()
         jid_out = create_string_buffer(128)
         rusage = pointer(POINTER(drmaa_attr_values_t)())
-        c(drmaa_wait, jobId.encode(), jid_out, sizeof(jid_out), byref(stat),
-          timeout, rusage)
+        if not isinstance(jobId, bytes):
+            jobId = jobId.encode()                
+        c(drmaa_wait, jobId, jid_out, sizeof(jid_out), byref(stat), timeout, 
+          rusage)
         res_usage = adapt_rusage(rusage)
         exited = c_int()
         c(drmaa_wifexited, byref(exited), stat)
@@ -497,7 +501,9 @@ class Session(object):
         jobs return a FAILED status.
         """
         status = c_int()
-        c(drmaa_job_ps, jobId.encode(), byref(status))
+        if not isinstance(jobId, bytes):
+            jobId = jobId.encode()        
+        c(drmaa_job_ps, jobId, byref(status))
         return status_to_string(status.value)
 
     def __enter__(self):
