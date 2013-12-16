@@ -30,6 +30,13 @@ from ctypes.util import find_library
 
 from drmaa.errors import error_check, error_buffer
 
+
+# Python 3 compatability help
+if sys.version_info < (3, 0):
+    bytes = str
+    str = unicode
+
+
 # the name of the OS environment variable optionally
 # containing the full path to the drmaa library
 _drmaa_lib_env_name = 'DRMAA_LIBRARY_PATH'
@@ -59,7 +66,7 @@ drmaa_exit.argtypes = [STRING, size_t]
 
 
 def py_drmaa_init(contact=None):
-    if not isinstance(contact, bytes) and contact is not None:
+    if isinstance(contact, str):
         contact = contact.encode()
     return _lib.drmaa_init(contact, error_buffer, sizeof(error_buffer))
 

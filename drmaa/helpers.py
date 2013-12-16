@@ -46,6 +46,12 @@ from drmaa.wrappers import (drmaa_attr_names_t, drmaa_attr_values_t,
                             drmaa_version, STRING)
 
 
+# Python 3 compatability help
+if sys.version_info < (3, 0):
+    bytes = str
+    str = unicode
+
+
 _BUFLEN = ATTR_BUFFER
 
 
@@ -54,10 +60,10 @@ class BoolConverter(object):
     """Helper class to convert to/from bool attributes."""
 
     def __init__(self, true=b'y', false=b'n'):
-        if not isinstance(true, bytes):
+        if isinstance(true, str):
             true = true.encode()
         self.true = true
-        if not isinstance(false, bytes):
+        if isinstance(false, str):
             false = false.encode()
         self.false = false
 
@@ -132,7 +138,7 @@ class Attribute(object):
            a converter to translate attribute values to/from the underlying
            implementation. See BoolConverter for an example.
         """
-        if not isinstance(name, bytes):
+        if isinstance(name, str):
             name = name.encode()
         self.name = name
         self.converter = type_converter
@@ -140,7 +146,7 @@ class Attribute(object):
     def __set__(self, instance, value):
         if self.converter:
             v = self.converter.to_drmaa(value)
-        elif not isinstance(value, bytes):
+        elif isinstance(value, str):
             v = value.encode()
         else:
             v = value
@@ -167,7 +173,7 @@ class VectorAttribute(object):
     """
 
     def __init__(self, name):
-        if not isinstance(name, bytes):
+        if isinstance(name, str):
             name = name.encode()
         self.name = name
 
@@ -188,7 +194,7 @@ class DictAttribute(object):
     """
 
     def __init__(self, name):
-        if not isinstance(name, bytes):
+        if isinstance(name, str):
             name = name.encode()
         self.name = name
 
@@ -290,7 +296,7 @@ def string_vector(v):
     vlen = len(v)
     values = (STRING * (vlen + 1))()
     for i, el in enumerate(v):
-        values[i] = STRING(el.encode() if not isinstance(el, bytes) else el)
+        values[i] = STRING(el.encode() if isinstance(el, str) else el)
     values[vlen] = STRING()
     return values
 
