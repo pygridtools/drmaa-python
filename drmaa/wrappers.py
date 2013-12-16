@@ -24,6 +24,7 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
 import os
+import sys
 from ctypes import (c_char_p, c_int, c_long, c_size_t, c_uint, c_ulong, CDLL,
                     POINTER, RTLD_GLOBAL, sizeof, Structure)
 from ctypes.util import find_library
