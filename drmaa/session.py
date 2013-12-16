@@ -22,6 +22,7 @@ Everything related to sessions and jobs.
 
 from __future__ import absolute_import, print_function, unicode_literals
 
+import sys
 from collections import namedtuple
 from ctypes import byref, c_int, create_string_buffer, pointer, POINTER, sizeof
 
@@ -48,6 +49,12 @@ from drmaa.wrappers import (drmaa_allocate_job_template, drmaa_attr_values_t,
                             drmaa_wexitstatus, drmaa_wifaborted,
                             drmaa_wifexited, drmaa_wifsignaled, drmaa_wtermsig,
                             py_drmaa_exit, py_drmaa_init)
+
+
+# Python 3 compatability help
+if sys.version_info < (3, 0):
+    bytes = str
+    str = unicode
 
 
 JobInfo = namedtuple("JobInfo",
@@ -368,8 +375,8 @@ class Session(object):
         jobs submitted by other DRMAA session in other DRMAA implementations
         or jobs submitted via native utilities.
         """
-        if not isinstance(jobId, bytes):
-            jobId = jobId.encode()        
+        if isinstance(jobId, str):
+            jobId = jobId.encode()
         c(drmaa_control, jobId, string_to_control_action(operation))
 
     # takes string list, num value and boolean, no return value
@@ -453,9 +460,9 @@ class Session(object):
         stat = c_int()
         jid_out = create_string_buffer(128)
         rusage = pointer(POINTER(drmaa_attr_values_t)())
-        if not isinstance(jobId, bytes):
-            jobId = jobId.encode()                
-        c(drmaa_wait, jobId, jid_out, sizeof(jid_out), byref(stat), timeout, 
+        if isinstance(jobId, str):
+            jobId = jobId.encode()
+        c(drmaa_wait, jobId, jid_out, sizeof(jid_out), byref(stat), timeout,
           rusage)
         res_usage = adapt_rusage(rusage)
         exited = c_int()
@@ -501,8 +508,8 @@ class Session(object):
         jobs return a FAILED status.
         """
         status = c_int()
-        if not isinstance(jobId, bytes):
-            jobId = jobId.encode()        
+        if isinstance(jobId, str):
+            jobId = jobId.encode()
         c(drmaa_job_ps, jobId, byref(status))
         return status_to_string(status.value)
 

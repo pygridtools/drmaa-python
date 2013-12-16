@@ -24,11 +24,19 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
 import os
+import sys
 from ctypes import (c_char_p, c_int, c_long, c_size_t, c_uint, c_ulong, CDLL,
                     POINTER, RTLD_GLOBAL, sizeof, Structure)
 from ctypes.util import find_library
 
 from drmaa.errors import error_check, error_buffer
+
+
+# Python 3 compatability help
+if sys.version_info < (3, 0):
+    bytes = str
+    str = unicode
+
 
 # the name of the OS environment variable optionally
 # containing the full path to the drmaa library
@@ -59,7 +67,7 @@ drmaa_exit.argtypes = [STRING, size_t]
 
 
 def py_drmaa_init(contact=None):
-    if not isinstance(contact, bytes) and contact is not None:
+    if isinstance(contact, str):
         contact = contact.encode()
     return _lib.drmaa_init(contact, error_buffer, sizeof(error_buffer))
 

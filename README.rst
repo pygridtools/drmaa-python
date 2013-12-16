@@ -39,6 +39,11 @@ License
 Changelog
 ~~~~~~~~~
 
+-  v0.7.3
+   
+   -  Fix a couple crashes when certain functions that expect ``str`` were passed 
+      integers.
+
 -  v0.7.2
    
    -  Fix a couple inconsistencies with ``str`` vs ``bytes`` in Python 3 in 
