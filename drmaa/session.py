@@ -401,20 +401,24 @@ class Session(object):
             data record, which includes a record of the job's consumption of
             system resources during its execution and other statistical
             information. If set to True, the DRM will dispose of the job's
-            data record at the end of the synchroniize() call. If set to
+            data record at the end of the synchronize() call. If set to
             False, the data record will be left for future access via the
-            wait() method.
+            wait() method. It is the responsibility of the application to
+            make sure that either `synchronize()` or `wait()`is called for 
+            every job. Not doing so creates a memory leak. Note that calling
+            synchronize() with dispose set to true flushes all accounting 
+            information for all jobs in the list.
 
         To avoid thread race conditions in multithreaded applications, the
         DRMAA implementation user should explicitly synchronize this call with
         any other job submission calls or control calls that may change the
         number of remote jobs.
 
-        If the call exits before the
-        timeout has elapsed, all the jobs have been waited on or there was an
-        interrupt. If the invocation exits on timeout, an ExitTimeoutException
-        is thrown. The caller should check system time before and after this
-        call in order to be sure of how much time has passed.
+        If the call exits before the timeout has elapsed, all the jobs have
+        been waited on or there was an interrupt. If the invocation exits on
+        timeout, an ExitTimeoutException is thrown. The caller should check
+        system time before and after this call in order to be sure of how much
+        time has passed.
         """
         if dispose:
             d = 1
