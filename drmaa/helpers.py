@@ -200,13 +200,13 @@ class DictAttribute(object):
         self.name = name
 
     def __set__(self, instance, value):
-        v = []
+        vector = []
         for k, v in value.items():
             if isinstance(k, bytes):
                 k = k.decode(ENCODING)
             if isinstance(v, bytes):
                 v = v.decode(ENCODING)
-            v.append("{0}={1}".format(k, v).encode(ENCODING))
+            vector.append("{0}={1}".format(k, v).encode(ENCODING))
         c(drmaa_set_vector_attribute, instance, self.name,
           string_vector(v))
 
