@@ -208,7 +208,7 @@ class DictAttribute(object):
                 v = v.decode(ENCODING)
             vector.append("{0}={1}".format(k, v).encode(ENCODING))
         c(drmaa_set_vector_attribute, instance, self.name,
-          string_vector(v))
+          string_vector(vector))
 
     def __get__(self, instance, _):
         x = [i.split('=', 1) for i in
