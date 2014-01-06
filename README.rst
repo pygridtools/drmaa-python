@@ -39,6 +39,10 @@ License
 Changelog
 ~~~~~~~~~
 
+-  v0.7.6
+
+   -  Fix a typo in ``DictAttribute`` that was causing a crash.
+
 -  v0.7.5
 
    -  Fix an issue where dictionary attributes (like ``jtEnvironment``) could
