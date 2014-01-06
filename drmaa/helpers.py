@@ -31,7 +31,7 @@ from collections import namedtuple
 from ctypes import (byref, c_uint, create_string_buffer, POINTER, pointer,
                     sizeof)
 
-from drmaa.const import ATTR_BUFFER, NO_MORE_ELEMENTS
+from drmaa.const import ATTR_BUFFER, ENCODING, NO_MORE_ELEMENTS
 from drmaa.errors import error_buffer
 from drmaa.wrappers import (drmaa_attr_names_t, drmaa_attr_values_t,
                             drmaa_get_attribute, drmaa_get_attribute_names,
@@ -61,10 +61,10 @@ class BoolConverter(object):
 
     def __init__(self, true=b'y', false=b'n'):
         if isinstance(true, str):
-            true = true.encode()
+            true = true.encode(ENCODING)
         self.true = true
         if isinstance(false, str):
-            false = false.encode()
+            false = false.encode(ENCODING)
         self.false = false
 
     def to_drmaa(self, value):
@@ -104,7 +104,8 @@ class SessionStringAttribute(object):
 
 Version = namedtuple("Version", "major minor")
 if sys.version_info < (3, 0):
-    Version.__str__ = lambda x: "{0}.{1}".format(x.major, x.minor).encode()
+    Version.__str__ = lambda x: "{0}.{1}".format(x.major,
+                                                 x.minor).encode(ENCODING)
 else:
     Version.__str__ = lambda x: "{0}.{1}".format(x.major, x.minor)
 
@@ -139,7 +140,7 @@ class Attribute(object):
            implementation. See BoolConverter for an example.
         """
         if isinstance(name, str):
-            name = name.encode()
+            name = name.encode(ENCODING)
         self.name = name
         self.converter = type_converter
 
@@ -147,7 +148,7 @@ class Attribute(object):
         if self.converter:
             v = self.converter.to_drmaa(value)
         elif isinstance(value, str):
-            v = value.encode()
+            v = value.encode(ENCODING)
         else:
             v = value
         c(drmaa_set_attribute, instance, self.name, v)
@@ -174,7 +175,7 @@ class VectorAttribute(object):
 
     def __init__(self, name):
         if isinstance(name, str):
-            name = name.encode()
+            name = name.encode(ENCODING)
         self.name = name
 
     def __set__(self, instance, value):
@@ -195,11 +196,12 @@ class DictAttribute(object):
 
     def __init__(self, name):
         if isinstance(name, str):
-            name = name.encode()
+            name = name.encode(ENCODING)
         self.name = name
 
     def __set__(self, instance, value):
-        v = ["{0}={1}".format(k, v).encode() for (k, v) in value.items()]
+        v = ["{0}={1}".format(k, v).encode(ENCODING) for (k, v) in
+             value.items()]
         c(drmaa_set_vector_attribute, instance, self.name,
           string_vector(v))
 
@@ -296,7 +298,7 @@ def string_vector(v):
     vlen = len(v)
     values = (STRING * (vlen + 1))()
     for i, el in enumerate(v):
-        values[i] = STRING(el.encode() if isinstance(el, str) else el)
+        values[i] = STRING(el.encode(ENCODING) if isinstance(el, str) else el)
     values[vlen] = STRING()
     return values
 
