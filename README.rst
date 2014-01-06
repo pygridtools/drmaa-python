@@ -39,6 +39,11 @@ License
 Changelog
 ~~~~~~~~~
 
+-  v0.7.5
+
+   -  Fix an issue where dictionary attributes (like ``jtEnvironment``) could
+      encounter ``UnicodeDecodeError``s upon assignment.
+
 -  v0.7.4
    
    -  Switch to using preferred encoding from ``locale`` module for converting 
