@@ -61,7 +61,7 @@ class SubmitBase(unittest.TestCase):
     def setUp(self):
         self.jt = jt = Session.createJobTemplate()
         jt.remoteCommand = 'python'
-        jt.args = ['-c', "print 'hello from python!'"]
+        jt.args = ['-c', "print('hello from python!')"]
         if hasattr(self, 'jt_tweaks'):
             self.jt_tweaks()
         self.jid = Session.runJob(jt)
