@@ -39,6 +39,12 @@ License
 Changelog
 ~~~~~~~~~
 
+-  v0.7.4
+   
+   -  Switch to using preferred encoding from ``locale`` module for converting 
+      strings to binary. This should prevent some lingering ``UnicodeEncodeError`` 
+      crashes on Python 2.7.
+
 -  v0.7.3
    
    -  Fix a couple crashes when certain functions that expect ``str`` were passed 
