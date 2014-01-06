@@ -25,6 +25,11 @@ drmaa constants
 
 from __future__ import absolute_import, print_function, unicode_literals
 
+import locale
+
+# Encoding to use for passing strings to C library
+ENCODING = locale.getpreferredencoding()
+
 # drmaa_get_attribute()
 ATTR_BUFFER = 1024
 

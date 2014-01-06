@@ -27,14 +27,15 @@ from collections import namedtuple
 from ctypes import byref, c_int, create_string_buffer, pointer, POINTER, sizeof
 
 from drmaa.const import (BLOCK_EMAIL, DEADLINE_TIME, DURATION_HLIMIT,
-                         DURATION_SLIMIT, ERROR_PATH, INPUT_PATH, JOB_CATEGORY,
-                         JOB_IDS_SESSION_ALL, JOB_IDS_SESSION_ANY, JOB_NAME,
-                         JobState, JobControlAction, JobSubmissionState,
-                         JOIN_FILES, JS_STATE, NATIVE_SPECIFICATION,
-                         OUTPUT_PATH, REMOTE_COMMAND, SIGNAL_BUFFER, START_TIME,
-                         status_to_string, string_to_control_action,
-                         TIMEOUT_NO_WAIT, TIMEOUT_WAIT_FOREVER, TRANSFER_FILES,
-                         V_ARGV, V_EMAIL, V_ENV, WCT_HLIMIT, WCT_SLIMIT, WD)
+                         DURATION_SLIMIT, ENCODING, ERROR_PATH, INPUT_PATH,
+                         JOB_CATEGORY, JOB_IDS_SESSION_ALL, JOB_IDS_SESSION_ANY,
+                         JOB_NAME, JobState, JobControlAction,
+                         JobSubmissionState, JOIN_FILES, JS_STATE,
+                         NATIVE_SPECIFICATION, OUTPUT_PATH, REMOTE_COMMAND,
+                         SIGNAL_BUFFER, START_TIME, status_to_string,
+                         string_to_control_action, TIMEOUT_NO_WAIT,
+                         TIMEOUT_WAIT_FOREVER, TRANSFER_FILES, V_ARGV, V_EMAIL,
+                         V_ENV, WCT_HLIMIT, WCT_SLIMIT, WD)
 from drmaa.helpers import (adapt_rusage, Attribute, attribute_names_iterator,
                            BoolConverter, c, DictAttribute, IntConverter,
                            run_bulk_job, SessionStringAttribute,
@@ -376,7 +377,7 @@ class Session(object):
         or jobs submitted via native utilities.
         """
         if isinstance(jobId, str):
-            jobId = jobId.encode()
+            jobId = jobId.encode(ENCODING)
         c(drmaa_control, jobId, string_to_control_action(operation))
 
     # takes string list, num value and boolean, no return value
@@ -401,20 +402,24 @@ class Session(object):
             data record, which includes a record of the job's consumption of
             system resources during its execution and other statistical
             information. If set to True, the DRM will dispose of the job's
-            data record at the end of the synchroniize() call. If set to
+            data record at the end of the synchronize() call. If set to
             False, the data record will be left for future access via the
-            wait() method.
+            wait() method. It is the responsibility of the application to
+            make sure that either `synchronize()` or `wait()`is called for
+            every job. Not doing so creates a memory leak. Note that calling
+            synchronize() with dispose set to true flushes all accounting
+            information for all jobs in the list.
 
         To avoid thread race conditions in multithreaded applications, the
         DRMAA implementation user should explicitly synchronize this call with
         any other job submission calls or control calls that may change the
         number of remote jobs.
 
-        If the call exits before the
-        timeout has elapsed, all the jobs have been waited on or there was an
-        interrupt. If the invocation exits on timeout, an ExitTimeoutException
-        is thrown. The caller should check system time before and after this
-        call in order to be sure of how much time has passed.
+        If the call exits before the timeout has elapsed, all the jobs have
+        been waited on or there was an interrupt. If the invocation exits on
+        timeout, an ExitTimeoutException is thrown. The caller should check
+        system time before and after this call in order to be sure of how much
+        time has passed.
         """
         if dispose:
             d = 1
@@ -461,7 +466,7 @@ class Session(object):
         jid_out = create_string_buffer(128)
         rusage = pointer(POINTER(drmaa_attr_values_t)())
         if isinstance(jobId, str):
-            jobId = jobId.encode()
+            jobId = jobId.encode(ENCODING)
         c(drmaa_wait, jobId, jid_out, sizeof(jid_out), byref(stat), timeout,
           rusage)
         res_usage = adapt_rusage(rusage)
@@ -509,7 +514,7 @@ class Session(object):
         """
         status = c_int()
         if isinstance(jobId, str):
-            jobId = jobId.encode()
+            jobId = jobId.encode(ENCODING)
         c(drmaa_job_ps, jobId, byref(status))
         return status_to_string(status.value)
 

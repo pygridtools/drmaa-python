@@ -29,6 +29,7 @@ from ctypes import (c_char_p, c_int, c_long, c_size_t, c_uint, c_ulong, CDLL,
                     POINTER, RTLD_GLOBAL, sizeof, Structure)
 from ctypes.util import find_library
 
+from drmaa.const import ENCODING
 from drmaa.errors import error_check, error_buffer
 
 
@@ -68,7 +69,7 @@ drmaa_exit.argtypes = [STRING, size_t]
 
 def py_drmaa_init(contact=None):
     if isinstance(contact, str):
-        contact = contact.encode()
+        contact = contact.encode(ENCODING)
     return _lib.drmaa_init(contact, error_buffer, sizeof(error_buffer))
 
 _lib.drmaa_exit.argtypes = [c_char_p, c_size_t]
