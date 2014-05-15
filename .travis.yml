@@ -8,8 +8,6 @@ notifications:
   email: false
 
 # Install stuff
-virtualenv:
-  system_site_packages: true
 before_install:
   - travis/install_sge.sh
   - export GRID_MAP_REDIS_PORT=12345
