@@ -3,6 +3,7 @@ python:
   - 2.6
   - 2.7
   - 3.3
+  - 3.4
 
 notifications:
   email: false
@@ -10,7 +11,6 @@ notifications:
 # Install stuff
 before_install:
   - travis/install_sge.sh
-  - export GRID_MAP_REDIS_PORT=12345
   - export SGE_ROOT=/var/lib/gridengine
   - export SGE_CELL=default
   - export DRMAA_LIBRARY_PATH=/usr/lib/libdrmaa.so.1.0
