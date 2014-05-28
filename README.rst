@@ -52,8 +52,9 @@ For SGE, this means ``SGE_ROOT`` and ``SGE_CELL``, which should be set as follow
    export SGE_CELL=default
 
 
-where ``/path/to/gridengine/`` is replaced with the actual path to your Grid Engine installation.
-This is typically `/var/lib/gridengine`.
+where ``/path/to/gridengine/`` is replaced with the actual path to your Grid Engine installation, 
+and ``default`` is replaced with your installation's actual cell. The path is typically 
+``/var/lib/gridengine``.
 
 You will also need access to the ``libdrmaa.so.1.0`` C library, which can often be installed as
 part of the ``libdrmaa-dev`` package on most Unixes. Once you have installed that, you may need to 
