@@ -67,11 +67,12 @@ if it is not installed in a location that Python usually looks for libraries.
 
    export DRMAA_LIBRARY_PATH=/usr/lib/libdrmaa.so.1.0
 
+Acknowledgments
+~~~~~~~~~~~~~~~
 
-License
-~~~~~~~
-
--  BSD (3 Clause)
+Thank you to `StatPro <http://www.statpro.com/>`__ and 
+`Educational Testing Service <https://github.com/EducationalTestingService>`__ for
+funding the development of DRMAA Python.
 
 Changelog
 ~~~~~~~~~
