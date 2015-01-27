@@ -1,21 +1,23 @@
 DRMAA Python
 ------------
 
-.. image:: https://travis-ci.org/pygridtools/drmaa-python.svg
+.. image:: https://img.shields.io/travis/pygridtools/drmaa-python/stable.svg
+   :alt: Build status
    :target: https://travis-ci.org/pygridtools/drmaa-python
-   :alt: Travis build status
 
-.. image:: https://coveralls.io/repos/pygridtools/drmaa-python/badge.svg
-  :target: https://coveralls.io/r/pygridtools/drmaa-python
-  :alt: Test coverage
+.. image:: https://img.shields.io/coveralls/pygridtools/drmaa-python/stable.svg
+    :target: https://coveralls.io/r/pygridtools/drmaa-python
 
-.. image:: https://pypip.in/d/drmaa/badge.svg
-   :target: https://crate.io/packages/drmaa
+.. image:: https://img.shields.io/pypi/dm/drmaa.svg
+   :target: https://warehouse.python.org/project/drmaa/
    :alt: PyPI downloads
 
-.. image:: https://pypip.in/v/drmaa/badge.svg
-   :target: https://crate.io/packages/drmaa
+.. image:: https://img.shields.io/pypi/v/drmaa.svg
+   :target: https://warehouse.python.org/project/drmaa/
    :alt: Latest version on PyPI
+
+.. image:: https://img.shields.io/pypi/l/drmaa.svg
+   :alt: License
 
 `Distributed Resource Management Application API <http://en.wikipedia.org/wiki/DRMAA>`__
 (DRMAA) bindings for Python. For more information
