@@ -1,19 +1,19 @@
 DRMAA Python
 ------------
 
-.. image:: https://travis-ci.org/drmaa-python/drmaa-python.png
-   :target: https://travis-ci.org/drmaa-python/drmaa-python
+.. image:: https://travis-ci.org/pygridtools/drmaa-python.svg
+   :target: https://travis-ci.org/pygridtools/drmaa-python
    :alt: Travis build status
 
-.. image:: https://coveralls.io/repos/drmaa-python/drmaa-python/badge.png
-  :target: https://coveralls.io/r/drmaa-python/drmaa-python
+.. image:: https://coveralls.io/repos/pygridtools/drmaa-python/badge.svg
+  :target: https://coveralls.io/r/pygridtools/drmaa-python
   :alt: Test coverage
 
-.. image:: https://pypip.in/d/drmaa/badge.png
+.. image:: https://pypip.in/d/drmaa/badge.svg
    :target: https://crate.io/packages/drmaa
    :alt: PyPI downloads
 
-.. image:: https://pypip.in/v/drmaa/badge.png
+.. image:: https://pypip.in/v/drmaa/badge.svg
    :target: https://crate.io/packages/drmaa
    :alt: Latest version on PyPI
 
