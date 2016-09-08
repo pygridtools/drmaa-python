@@ -23,7 +23,7 @@ DRMAA Python
 (DRMAA) bindings for Python. For more information
 `read the docs <http://drmaa-python.readthedocs.org>`__.  
 
-If you simply want to run Python functions on a DRMAA-compatbile grid, use
+If you simply want to run Python functions on a DRMAA-compatible grid, use
 `GridMap <https://github.com/pygridtools/gridmap>`__.
 
 Requirements
