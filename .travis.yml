@@ -8,7 +8,15 @@ python:
   - 3.6
   - 3.6-dev
 
-sudo: true
+sudo: required
+
+addons:
+  hostname: drmaa.travis-ci.org
+  hosts:
+    - localhost
+    - localhost.localdomain
+    - drmaa.travis-ci.org
+
 
 notifications:
   email: false
