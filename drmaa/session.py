@@ -477,11 +477,13 @@ class Session(object):
         signaled = c_int()
         c(drmaa_wifsignaled, byref(signaled), stat)
         coredumped = c_int()
-        c(drmaa_wcoredump, byref(coredumped), stat)
+        if exited.value == 0:
+            c(drmaa_wcoredump, byref(coredumped), stat)
         exit_status = c_int()
         c(drmaa_wexitstatus, byref(exit_status), stat)
         term_signal = create_string_buffer(SIGNAL_BUFFER)
-        c(drmaa_wtermsig, term_signal, sizeof(term_signal), stat)
+        if signaled.value == 1:
+            c(drmaa_wtermsig, term_signal, sizeof(term_signal), stat)
         return JobInfo(jid_out.value.decode(), bool(exited), bool(signaled),
                        term_signal.value.decode(), bool(coredumped),
                        bool(aborted), int(exit_status.value), res_usage)
