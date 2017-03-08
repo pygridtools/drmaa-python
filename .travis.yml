@@ -4,9 +4,16 @@ python:
   - 2.7
   - 3.3
   - 3.4
+  - 3.5
+  - 3.6
+  - 3.6-dev
+
+sudo: true
 
 notifications:
   email: false
+
+cache: pip
 
 # Install stuff
 before_install:
@@ -14,9 +21,10 @@ before_install:
   - export SGE_ROOT=/var/lib/gridengine
   - export SGE_CELL=default
   - export DRMAA_LIBRARY_PATH=/usr/lib/libdrmaa.so.1.0
+  - pip install --upgrade pip
 install:
-  - pip install python-coveralls --use-mirrors
-  - pip install nose-cov --use-mirrors
+  - pip install python-coveralls
+  - pip install nose-cov
   - python setup.py install
 
 # Run test
