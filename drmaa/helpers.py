@@ -231,11 +231,15 @@ def attributes_iterator(attributes):
 
 def adapt_rusage(rusage):
     """
-    transform a rusage data structure into a dict
+    Transform a rusage data structure into a dict.
+
+    Due to the value possibly containing a equal sign make sure we
+    limit the splits to only the first occurrence.
     """
     rv = dict()
     for attr in attributes_iterator(rusage.contents):
-        k, v = attr.split('=')
+        
+        k, v = attr.split('=',1)
         rv[k] = v
     return rv
 
