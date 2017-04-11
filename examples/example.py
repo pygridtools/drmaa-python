@@ -19,7 +19,7 @@ def init_job_template(jt, path, args, as_bulk_job):
     jt.args = args
     jt.joinFiles=True
     # jt.startTime=datetime.now()
-    # print "start time is: ", jt.startTime
+    # print("start time is: ", jt.startTime)
     if as_bulk_job:
         jt.outputPath=OPATH+'.'+drmaa.JobTemplate.PARAMETRIC_INDEX
     else:
