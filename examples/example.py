@@ -1,4 +1,6 @@
 #!/bin/python
+
+from __future__ import print_function
 import drmaa
 import os
 from sys import argv, exit
@@ -16,8 +18,8 @@ def init_job_template(jt, path, args, as_bulk_job):
     jt.remoteCommand = path
     jt.args = args
     jt.joinFiles=True
-    #jt.startTime=datetime.now()
-    #print "start time is: ", jt.startTime
+    # jt.startTime=datetime.now()
+    # print "start time is: ", jt.startTime
     if as_bulk_job:
         jt.outputPath=OPATH+'.'+drmaa.JobTemplate.PARAMETRIC_INDEX
     else:
@@ -27,7 +29,7 @@ def init_job_template(jt, path, args, as_bulk_job):
 
 def main():
     if len(argv) < 2:
-        print "usage: example.py <path-to-job> <arguments>"
+        print("usage: example.py <path-to-job> <arguments>")
         exit(1)
     job_path=argv[1]
     s=drmaa.Session()
@@ -38,7 +40,7 @@ def main():
     for i in range(NBULKS):
         all_jobids += s.runBulkJobs(jt, 1, JOB_CHUNK, 1)
         sleep(1)
-    print "submitted bulk jobs with jobids:"
+    print("submitted bulk jobs with jobids:")
     pprint(all_jobids)
     # submit some sequential jobs
     s.deleteJobTemplate(jt)
@@ -50,11 +52,11 @@ def main():
     s.synchronize(all_jobids,
                   drmaa.Session.TIMEOUT_WAIT_FOREVER,
                   False)
-    print "synchronized with all jobs"
+    print("synchronized with all jobs")
     for jid in all_jobids:
-        print '-' * 76
+        print('-' * 76)
         info=s.wait(jid, drmaa.Session.TIMEOUT_WAIT_FOREVER)
-        print """\
+        print("""\
 id:                        %(jobId)s
 exited:                    %(hasExited)s
 signaled:                  %(hasSignal)s
@@ -64,7 +66,8 @@ aborted:                   %(wasAborted)s
 resource usage:
 
 %(resourceUsage)s
-""" % info._asdict()
+""" % info._asdict())
+
 
 if __name__=='__main__':
     main()
