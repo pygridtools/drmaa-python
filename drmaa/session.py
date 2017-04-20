@@ -100,7 +100,7 @@ class JobTemplate(object):
     """
     blockEmail = Attribute(BLOCK_EMAIL, type_converter=BoolConverter(true='1',
                                                                      false='0'))
-    """False id this job should send an email, True otherwise."""
+    """False if this job should send an email, True otherwise."""
     startTime = Attribute(START_TIME)
     """The job start time, a partial timestamp string."""
     jobName = Attribute(JOB_NAME)
