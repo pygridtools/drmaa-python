@@ -10,11 +10,13 @@ also included in the repository.
 Starting and Stopping a Session
 -------------------------------
 
-The following code segments (example1.py and example1.1.py) shows the most basic
-DRMAA python binding program.
+The following two code segments show the most basic DRMAA python binding
+program.
 
 .. code-block:: python
    :linenos:
+   :caption: example1.py
+   :name: example-1
 
    #!/usr/bin/env python
 
@@ -55,6 +57,9 @@ function is called after ``exit()`` is called, it will return an error.
 
 .. code-block:: python
    :linenos:
+   :caption: example1.1.py
+   :name: example-1-1
+   :emphasize-lines: 13,15,18,19
 
    #!/usr/bin/env python
 
@@ -81,15 +86,15 @@ function is called after ``exit()`` is called, it will return an error.
    if __name__=='__main__':
        main()
 
-This example is very similar to Example 1. The difference is that it uses the
-Grid Engine feature of reconnectable sessions. The DRMAA concept of a session is
-translated into a session tag in the Grid Engine job structure. That means that
-every job knows to which session it belongs. With reconnectable sessions, it's
-possible to initialize the DRMAA library to a previous session, allowing the
-library access to that session's job list. The only limitation, though, is that
-jobs which end between the calls to ``exit()`` and ``init()`` will be lost, as
-the reconnecting session will no longer see these jobs, and so won't know about
-them.
+This example is very similar to :ref:`Example 1 <example-1>`. The difference is
+that it uses the Grid Engine feature of reconnectable sessions. The DRMAA
+concept of a session is translated into a session tag in the Grid Engine job
+structure. That means that every job knows to which session it belongs. With
+reconnectable sessions, it's possible to initialize the DRMAA library to a
+previous session, allowing the library access to that session's job list. The
+only limitation, though, is that jobs which end between the calls to ``exit()``
+and ``init()`` will be lost, as the reconnecting session will no longer see
+these jobs, and so won't know about them.
 
 On line 13, we use the contact attribute to get the contact information for this
 session. On line 15 we then exit the session. On line 18, we use the stored
@@ -101,11 +106,12 @@ the session a second time.
 Running a Job
 -------------
 
-The following code segment (example2.py and example2.1.py) shows how to use the
-DRMAA python binding to submit a job to Grid Engine. It submits a small shell
-script (sleeper.sh) which takes two arguments:
+The following code segments show how to use the DRMAA python binding to
+submit a job to Grid Engine. It submits a small shell script (``sleeper.sh``)
+which takes two arguments:
 
 .. code-block:: bash
+
    #!/bin/bash
    echo "Hello world, the answer is $1"
    sleep 3s
@@ -113,6 +119,9 @@ script (sleeper.sh) which takes two arguments:
 
 .. code-block:: python
    :linenos:
+   :caption: example2.py
+   :name: example-2
+   :emphasize-lines: 12-22
 
    #!/usr/bin/env python
 
@@ -169,6 +178,8 @@ If instead of a single job we had wanted to submit an array job, we could have
 replaced the else on line 18 and 19 with the following:
 
 .. code-block:: python
+   :caption: example2.1.py
+   :name: example-2-1
 
    jobid = s.runBulkJobs(jt, 1, 30, 2)
    print('Your jobs have been submitted with IDs %s' % jobid)
@@ -180,11 +191,14 @@ a list. On the last line, we print all the job ids.
 Waiting for a Job
 -----------------
 
-Now we're going to extend our example to include waiting for a job to finish
-(example3.py, example3.1.py and example3.2.py).
+Now we're going to extend our example to include waiting for a job to finish.
+
 
 .. code-block:: python
    :linenos:
+   :caption: example3.py
+   :name: example-3
+   :emphasize-lines: 21-22
 
    #!/usr/bin/env python
 
@@ -216,17 +230,18 @@ Now we're going to extend our example to include waiting for a job to finish
        main()
 
 
-This example is very similar to Example 2 except for line 21. On line 21 we call
-``wait()`` to wait for the job to end. We have to give ``wait()`` both the ID of
-the job for which we want to wait, and also how long we are willing to wait for
-the job to finish. This could be a number of seconds, or it could be either
-``TIMEOUT_WAIT_FOREVER`` or ``TIMEOUT_NO_WAIT``. ``wait()`` returns a
-``JobInfo`` tuple, which has the following attributes: ``jobId``, ``hasExited``,
-``hasSignal``, ``terminatedSignal``, ``hasCoreDump``, ``wasAborted``,
-``exitStatus``, and ``resourceUsage``. ``jobId`` is particularly useful if we
-passed in ``JOB_IDS_SESSION_ANY`` as the ID argument for ``wait()``, because
-without it we would have no way of knowing which job it actually waited for.
-Lastly, we print out the job ID and the exit status on line 22.
+This example is very similar to :ref:`Example 2 <example-2>` except for line
+21. On line 21 we call ``wait()`` to wait for the job to end. We have to give
+``wait()`` both the ID of the job for which we want to wait, and also how long
+we are willing to wait for the job to finish. This could be a number of
+seconds, or it could be either ``TIMEOUT_WAIT_FOREVER`` or ``TIMEOUT_NO_WAIT``.
+``wait()`` returns a ``JobInfo`` tuple, which has the following attributes:
+``jobId``, ``hasExited``, ``hasSignal``, ``terminatedSignal``, ``hasCoreDump``,
+``wasAborted``, ``exitStatus``, and ``resourceUsage``. ``jobId`` is
+particularly useful if we passed in ``JOB_IDS_SESSION_ANY`` as the ID argument
+for ``wait()``, because without it we would have no way of knowing which job it
+actually waited for.  Lastly, we print out the job ID and the exit status on
+line 22.
 
 An alternative to ``wait()`` when working with multiple jobs, such as jobs
 submitted by ``runBulkJobs()`` or multiple calls to ``runJob()`` is
@@ -234,6 +249,8 @@ submitted by ``runBulkJobs()`` or multiple calls to ``runJob()`` is
 ``synchronize()``, we could replace lines 18--22 with the following:
 
 .. code-block:: python
+   :caption: example3.1.py
+   :name: example-3-1
 
    joblist = s.runBulkJobs(jt, 1, 30, 2)
    print('Your jobs have been submitted with IDs %s' % joblist)
@@ -257,10 +274,12 @@ two functions is called for every job. Not doing so creates a memory leak. Note
 that calling ``synchronize()`` with dispose set to true flushes all accounting
 information for all jobs in the list. If you want to use ``synchronize()`` and
 still recover the accounting information, set ``dispose`` to ``False`` and call
-``wait()`` for each job. To do this in Example 3, we would replace lines 18--22
-with the following:
+``wait()`` for each job. To do this in :ref:`Example 3 <example-3>`, we would
+replace lines 18--22 with the following:
 
 .. code-block:: python
+   :caption: example3.2.py
+   :name: example-3-2
 
    joblist = s.runBulkJobs(jt, 1, 30, 2)
    print('Your jobs have been submitted with IDs %s' % joblist)
@@ -275,7 +294,7 @@ with the following:
 
 What's different is that on line 21 we set ``dispose`` to ``False``, and then on
 lines 22--26 we wait once for each job, printing the exit status and usage
-information as we did in Example 3.
+information as we did in :ref:`Example 3 <example-3>`.
 
 We pass ``joblist`` to ``synchronize()`` to wait for each job specifically.
 Otherwise, the ``wait()`` could end up waiting for a job submitted after the
@@ -284,10 +303,13 @@ call to ``synchronize()``.
 Controlling a Job
 -----------------
 
-Now let's look at an example of how to control a job from DRMAA (example4.py):
+Now let's look at an example of how to control a job from DRMAA:
 
 .. code-block:: python
    :linenos:
+   :caption: example4.py
+   :name: example-4
+   :emphasize-lines: 20
 
    #!/usr/bin/env python
 
@@ -317,9 +339,10 @@ Now let's look at an example of how to control a job from DRMAA (example4.py):
        main()
 
 
-This example is very similar to Example 2 except for line 20. On line 20 we use
-``control()`` to delete the job we just submitted. Aside from deleting the job,
-we could have also used ``control()`` to suspend, resume, hold, or release it.
+This example is very similar to :ref:`Example 2 <example-2>` except for line
+20. On line 20 we use ``control()`` to delete the job we just submitted. Aside
+from deleting the job, we could have also used ``control()`` to suspend,
+resume, hold, or release it.
 
 Note that ``control()`` can be used to control jobs not submitted through DRMAA.
 Any valid SGE job ID could be passed to ``control()`` as the ID of the job to
@@ -328,10 +351,13 @@ delete.
 Getting Job Status
 ------------------
 
-Here's an example of using DRMAA to query the status of a job (example5.py):
+Here's an example of using DRMAA to query the status of a job:
 
 .. code-block:: python
    :linenos:
+   :caption: example5.py
+   :name: example-5
+   :emphasize-lines: 22-40
 
    #!/usr/bin/env python
 
@@ -377,18 +403,21 @@ Here's an example of using DRMAA to query the status of a job (example5.py):
    if __name__=='__main__':
        main()
 
-Again, this example is very similar to Example 2, this time with the exception
-of lines 22--40. On line 36, we use ``jobStatus()`` to get the status of the job.
-Line 43 determine what the job status is and report it.
+Again, this example is very similar to :ref:`Example 2 <example-2>`, this time
+with the exception of lines 22--40. On line 36, we use ``jobStatus()`` to get
+the status of the job.  Line 43 determine what the job status is and report it.
 
 Getting DRM information
 -----------------------
 
 Lastly, let's look at how to query the DRMAA library for information about the
-DRMS and the DRMAA implementation itself (example6.py):
+DRMS and the DRMAA implementation itself:
 
 .. code-block:: python
    :linenos:
+   :caption: example6.py
+   :name: example-6
+   :emphasize-lines: 9-12
 
    #!/usr/bin/env python
 
