@@ -157,7 +157,7 @@ or ``runBulkJob()``.
 
 On line 13 we set the ``remoteCommand`` attribute. This attribute tells DRMAA
 where to find the program we want to run. Its value is the path to the
-executable. The path be be either relative or absolute. If relative, it is
+executable. The path can be either relative or absolute. If relative, it is
 relative to the ``workingDirectory`` attribute, which if not set defaults to the
 user's home directory. For more information on DRMAA attributes, please see the
 attributes man page. Note that for this program to work, the script
