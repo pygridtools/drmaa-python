@@ -16,7 +16,7 @@ def main():
     print('Exited from session')
 
     s.initialize(response)
-    print('Session was restarted successfullly')
+    print('Session was restarted successfully')
     s.exit()
     
 
