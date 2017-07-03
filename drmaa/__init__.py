@@ -27,7 +27,7 @@ Releases are available from PyPi: https://pypi.python.org/pypi/drmaa
 Documentation is hosted on ReadTheDocs: http://drmaa-python.readthedocs.org/
 
 :author: Enrico Sirola (enrico.sirola@statpro.com)
-:author: Dan Blanchard (dblanchard@ets.org)
+:author: Dan Blanchard (dan.blanchard@gmail.com)
 """
 
 from __future__ import absolute_import, print_function, unicode_literals

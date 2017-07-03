@@ -18,7 +18,7 @@
 # -----------------------------------------------------------
 #
 #  Author: Enrico Sirola <enrico.sirola@statpro.com>
-#  Author: Dan Blanchard <dblanchard@ets.org>
+#  Author: Dan Blanchard <dan.blanchard@gmail.com>
 
 """
 internal helpers

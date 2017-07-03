@@ -16,7 +16,7 @@
 # -----------------------------------------------------------
 #
 #  Author: Enrico Sirola <enrico.sirola@statpro.com>
-#  Author: Dan Blanchard <dblanchard@ets.org>
+#  Author: Dan Blanchard <dan.blanchard@gmail.com>
 
 from setuptools import setup, find_packages
 
@@ -36,7 +36,7 @@ setup(name="drmaa",
       packages=packages,
       package_data=package_data,
       author="Dan Blanchard",
-      author_email="dblanchard@ets.org",
+      author_email="dan.blanchard@gmail.com",
       description="a python DRMAA library",
       long_description=readme(),
       license="BSD",

@@ -2,7 +2,7 @@
 # This script installs and configures a Sun Grid Engine installation for use
 # on a Travis instance.
 #
-# Written by Dan Blanchard (dblanchard@ets.org), September 2013
+# Written by Dan Blanchard (dan.blanchard@gmail.com), September 2013
 
 cd travis
 sudo apt-get update -qq

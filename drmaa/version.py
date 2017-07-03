@@ -19,8 +19,8 @@
 This module exists solely for version information so I only have to change it
 in one place. Based on the suggestion `here. <http://bit.ly/16LbuJF>`_
 
-:author: Dan Blanchard (dblanchard@ets.org)
+:author: Dan Blanchard (dan.blanchard@gmail.com)
 '''
 
-__version__ = '0.7.7'
+__version__ = '0.7.8'
 VERSION = tuple(int(x) for x in __version__.split('.'))
