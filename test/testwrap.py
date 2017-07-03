@@ -152,9 +152,9 @@ class JobTemplateTests(unittest.TestCase):
 
     def test_vector_attributes(self):
         """vector attributes work"""
-        args = ['10', 'de', 'arglebargle']
+        args = [10, 'de', 'arglebargle']
         self.jt.args = args
-        eq_(self.jt.args, args)
+        eq_(self.jt.args, ['10', 'de', 'arglebargle'])
         em = ['baz@quz.edu', 'foo@bar.com']
         self.jt.email = em
         eq_(self.jt.email, em)

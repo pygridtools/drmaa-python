@@ -238,7 +238,7 @@ def adapt_rusage(rusage):
     """
     rv = dict()
     for attr in attributes_iterator(rusage.contents):
-        
+
         k, v = attr.split('=',1)
         rv[k] = v
     return rv
@@ -307,7 +307,11 @@ def string_vector(v):
     vlen = len(v)
     values = (STRING * (vlen + 1))()
     for i, el in enumerate(v):
-        values[i] = STRING(el.encode(ENCODING) if isinstance(el, str) else el)
+        if isinstance(el, str):
+            el = el.encode(ENCODING)
+        elif not isinstance(el, bytes):
+            el = str(el).encode(ENCODING)
+        values[i] = STRING(el)
     values[vlen] = STRING()
     return values
 
