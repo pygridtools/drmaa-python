@@ -288,6 +288,8 @@ def run_bulk_job(jt, start, end, incr=1):
         while drmaa_get_next_job_id(jids.contents, jid,
                                     _BUFLEN) != NO_MORE_ELEMENTS:
             yield jid.value.decode()
+    except StopIteration:
+        pass
     finally:
         drmaa_release_job_ids(jids.contents)
 
