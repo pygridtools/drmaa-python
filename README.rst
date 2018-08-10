@@ -29,7 +29,7 @@ If you simply want to run Python functions on a DRMAA-compatible grid, use
 Requirements
 ~~~~~~~~~~~~
 
--  Python 2.6+
+-  Python 2.7+
 -  A DRMAA-compatible cluster (e.g., Grid Engine)
 
 Installation
