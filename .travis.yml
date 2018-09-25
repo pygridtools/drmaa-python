@@ -30,7 +30,7 @@ before_install:
   - export SGE_ROOT=/var/lib/gridengine
   - export SGE_CELL=default
   - export DRMAA_LIBRARY_PATH=/usr/lib/libdrmaa.so.1.0
-  - pip install --upgrade pip
+  - pip install --upgrade pip setuptools
 install:
   - pip install python-coveralls
   - pip install nose-cov
