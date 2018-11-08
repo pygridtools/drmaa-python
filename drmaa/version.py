@@ -22,5 +22,5 @@ in one place. Based on the suggestion `here. <http://bit.ly/16LbuJF>`_
 :author: Dan Blanchard (dan.blanchard@gmail.com)
 '''
 
-__version__ = '0.7.8'
+__version__ = '0.7.9'
 VERSION = tuple(int(x) for x in __version__.split('.'))
